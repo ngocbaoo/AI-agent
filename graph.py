@@ -27,7 +27,7 @@ llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash",
 def agent_node(state: AgentState) -> dict:
     """
     Nhận toàn bộ lịch sử hội thoại, áp dụng một bộ quy tắc,
-    và quyết định hành động tiếp theo một cách đáng tin cậy hơn.
+    và quyết định hành động tiếp theo.
     """
     print("--- AGENT: Đang quyết định hành động tiếp theo... ---")
 
@@ -45,7 +45,8 @@ def agent_node(state: AgentState) -> dict:
          **QUY TẮC BỔ SUNG:**
          -   TUYỆT ĐỐI KHÔNG được tự bịa ra lý do không thể dùng tool. Nếu một tool cần thiết, hãy gọi nó.
          -   Nếu câu hỏi liên quan đến luật, PHẢI dùng 'legal_rag_tool'.
-         -   Nếu câu hỏi liên quan đến tra cứu nhãn hiệu, PHẢI dùng 'trademark_search_tool'.
+         -   Nếu câu hỏi liên quan đến tra cứu nhãn hiệu, PHẢI dùng các tool liên quan đến trademark search tùy vào thị trường. 
+         -   Người dùng có thể nhập gần đúng tên nên hãy ưu tiên dùng tool fuzzy search
          -   Câu trả lời cuối cùng không được nhắc đến tên công cụ.
          """),
         MessagesPlaceholder(variable_name="messages"),
