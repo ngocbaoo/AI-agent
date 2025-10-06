@@ -1,136 +1,242 @@
-import os
-import time
-import re
-import requests
+# search.py
+import os, time, re, io, base64, requests
 from dotenv import load_dotenv
 from typing import List, Dict, Any, Optional
 from requests.exceptions import RequestException, JSONDecodeError
 from langchain_core.tools import tool
 from langchain_core.pydantic_v1 import BaseModel, Field
+from PIL import Image
 
-from .compare import compare_text_similarity_tool
+from .compare import compare_text_similarity_tool, compare_logo_similarity_tool
 load_dotenv()
 
 def _sanitize_for_rsql(name: str) -> str:
-    """
-    Loại bỏ các ký tự đặc biệt không hợp lệ cho truy vấn RSQL 
-    và chuẩn hóa khoảng trắng.
-    """
-    if not name:
-        return ""
-    # Chỉ giữ lại chữ cái, số, và khoảng trắng
-    sanitized = re.sub(r'[^a-zA-Z0-9\s]', '', name)
-    # Thay thế nhiều khoảng trắng bằng một khoảng trắng duy nhất
-    sanitized = re.sub(r'\s+', ' ', sanitized).strip()
-    return sanitized
+    if not name: return ""
+    s = re.sub(r'[^a-zA-Z0-9\s]', '', name)
+    return re.sub(r'\s+', ' ', s).strip()
 
-# -- Trademark search tool ---
-_euipo_sandbox_access_token: str | None = None
-_euipo_sandbox_token_expires_at: float = 0.0
+_euipo_sandbox_access_token = None
+_euipo_sandbox_token_expires_at = 0.0
 
-def _get_euipo_sandbox_access_token() -> str | None:
+def _get_euipo_sandbox_access_token() -> Optional[str]:
     global _euipo_sandbox_access_token, _euipo_sandbox_token_expires_at
     if _euipo_sandbox_access_token and time.time() < _euipo_sandbox_token_expires_at:
         return _euipo_sandbox_access_token
-    print("--- [TOOL LOG] Yêu cầu token mới từ API Sandbox (RSQL)... ---")
-    client_id = os.environ.get("EU_SANDBOX_ID")
-    client_secret = os.environ.get("EU_SANDBOX_SECRET")
-    if not client_id or not client_secret:
-        print("--- [TOOL ERROR] EU_SANDBOX_ID hoặc SECRET chưa được thiết lập. ---")
+    print("--- [TOOL LOG] Fetch EUIPO Sandbox token ---")
+    cid = os.environ.get("EU_SANDBOX_ID")
+    csec = os.environ.get("EU_SANDBOX_SECRET")
+    if not cid or not csec:
+        print("--- [TOOL ERROR] Missing EU_SANDBOX_ID/SECRET ---")
         return None
     token_url = "https://auth-sandbox.euipo.europa.eu/oidc/accessToken"
-    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-    data = {'grant_type': 'client_credentials', 'client_id': client_id, 'client_secret': client_secret, 'scope': 'uid'}
     try:
-        response = requests.post(token_url, headers=headers, data=data, timeout=10)
-        response.raise_for_status()
-        response_data = response.json()
-        access_token = response_data.get("access_token")
-        expires_in_seconds = response_data.get("expires_in", 3600)
-        _euipo_sandbox_access_token = access_token
-        _euipo_sandbox_token_expires_at = time.time() + expires_in_seconds - 60
-        print("--- [TOOL LOG] Đã lấy token API Sandbox (RSQL) thành công. ---")
+        r = requests.post(token_url,
+                          headers={'Content-Type': 'application/x-www-form-urlencoded'},
+                          data={'grant_type': 'client_credentials','client_id': cid,'client_secret': csec,'scope': 'uid'},
+                          timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        _euipo_sandbox_access_token = data.get("access_token")
+        _euipo_sandbox_token_expires_at = time.time() + data.get("expires_in", 3600) - 60
+        print("--- [TOOL LOG] Token OK ---")
         return _euipo_sandbox_access_token
     except RequestException as e:
-        print(f"--- [TOOL ERROR] Không thể lấy token (RSQL): {e.response.text if e.response else e} ---")
+        print(f"--- [TOOL ERROR] Token error: {e}")
         return None
-    
 
-# --- Công cụ Tra cứu API (API Search Tools) ---
+def _content_type_to_ext(ct: str) -> str:
+    ct = (ct or "").lower()
+    if "png" in ct: return ".png"
+    if "jpeg" in ct or "jpg" in ct: return ".jpg"
+    if "gif" in ct: return ".gif"
+    return ".jpg"
+
+def _to_jpeg_b64(raw_bytes: bytes) -> Optional[str]:
+    """
+    Chuẩn hoá mọi định dạng ảnh sang JPEG + base64 (in-RAM).
+    """
+    try:
+        img = Image.open(io.BytesIO(raw_bytes)).convert("RGB")
+        # giới hạn chiều lớn nhất 512px để giảm payload
+        img.thumbnail((512, 512))
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=85)
+        b64 = base64.b64encode(buf.getvalue()).decode("ascii")
+        # cleanup
+        buf.close()
+        del img
+        return b64
+    except Exception as e:
+        print(f"--- [TOOL WARN] Normalize img failed: {e}")
+        return None
+
+def _extract_markimage_b64(candidate: Dict[str, Any], headers: Dict[str, str]) -> Optional[str]:
+    """
+    Cố gắng lấy ảnh logo EUIPO -> trả về base64 JPEG. Tất cả in-memory.
+    """
+    app_no = candidate.get("applicationNumber")
+    if not app_no: return None
+
+    # 1) Nếu candidate có URL trực tiếp
+    mi = candidate.get("markImage") or {}
+    url = None
+    if isinstance(mi, str) and mi.startswith("http"):
+        url = mi
+    elif isinstance(mi, dict):
+        for k in ("url","uri","href","markImageUri","imageUri","imageUrl"):
+            if mi.get(k):
+                url = mi[k]; break
+
+    if url:
+        try:
+            print(f"--- [TOOL LOG] Download markImage URL: {url} (RAM) ---")
+            r = requests.get(url, headers=headers, timeout=15)
+            r.raise_for_status()
+            return _to_jpeg_b64(r.content)
+        except Exception as e:
+            print(f"--- [TOOL WARN] Download failed: {e}")
+
+    # 2) Thử gọi detail xem có base64/content
+    base = "https://api-sandbox.euipo.europa.eu/trademark-search/trademarks"
+    try:
+        d = requests.get(f"{base}/{app_no}", headers=headers, timeout=20)
+        if d.status_code == 200:
+            jd = d.json()
+            img = jd.get("markImage") or {}
+            # base64 variant?
+            for k in ("content","base64","imageBase64","imageContent"):
+                if isinstance(img, dict) and isinstance(img.get(k), str) and len(img.get(k)) > 100:
+                    try:
+                        raw = base64.b64decode(img[k])
+                        return _to_jpeg_b64(raw)
+                    except Exception as e:
+                        print(f"--- [TOOL WARN] b64->jpeg failed: {e}")
+                        break
+            # link ở detail?
+            for k in ("url","uri","href","markImageUri","imageUri","imageUrl"):
+                if isinstance(img, dict) and img.get(k):
+                    try:
+                        url = img[k]
+                        print(f"--- [TOOL LOG] Download markImage(detail): {url} ---")
+                        r = requests.get(url, headers=headers, timeout=15)
+                        r.raise_for_status()
+                        return _to_jpeg_b64(r.content)
+                    except Exception as e:
+                        print(f"--- [TOOL WARN] Download(detail) failed: {e}")
+                        break
+        else:
+            print(f"--- [TOOL WARN] Detail {app_no} HTTP {d.status_code}")
+    except Exception as e:
+        print(f"--- [TOOL WARN] Detail error: {e}")
+    return None
+
+# ===== Tool =====
 class TrademarkSearchInput(BaseModel):
     name: str = Field(description="Tên nhãn hiệu cần tra cứu.")
-    nice_class: Optional[int] = Field(default=None, description="Nhóm Nice (tùy chọn).")
-    threshold: Optional[float] = Field(default=None, description="Ngưỡng tương đồng từ 0.0 đến 1.0. Nếu được cung cấp, tool sẽ thực hiện tìm kiếm gần đúng.")
+    nice_class: Optional[int] = Field(default=None)
+    threshold: Optional[float] = Field(default=None)
+    user_logo_b64: Optional[str] = Field(default=None, description="(Optional) Base64 JPEG/PNG logo của người dùng.")
 
 @tool(args_schema=TrademarkSearchInput)
-def trademark_search_tool(name: str, nice_class: Optional[int] = None, threshold: Optional[float] = 0.85) -> List[Dict[str, Any]]:
+def trademark_search_tool(name: str, nice_class: Optional[int] = None,
+                          threshold: Optional[float] = 0.85,
+                          user_logo_b64: Optional[str] = None) -> List[Dict[str, Any]]:
     """
-    Tra cứu nhãn hiệu, sử dụng phương pháp "so sánh đa chiều" để xử lý các
-    trường hợp cố tình viết sai chính tả bằng ký tự đặc biệt.
+    Tra cứu + chấm điểm (tên + logo nếu có). Không lưu file.
+    Trả về Top-5 theo combined_score.
     """
     original_name = name
     sanitized_name = _sanitize_for_rsql(name)
-
-    print(f"--- [SEARCH LOG] Bắt đầu tra cứu cho '{original_name}' (đã làm sạch thành '{sanitized_name}') ---")
-    
+    print(f"--- [SEARCH LOG] Query='{sanitized_name}' class={nice_class} ---")
     if not sanitized_name:
-        return [{"error": "Tên nhãn hiệu sau khi làm sạch bị rỗng, không thể tìm kiếm."}]
+        return [{"error": "Tên sau khi làm sạch rỗng."}]
 
-    # --- BƯỚC 1: TRA CỨU MỞ RỘNG (giữ nguyên) ---
-    # ... (toàn bộ code gọi API để lấy broad_search_results giữ nguyên) ...
-    access_token = _get_euipo_sandbox_access_token()
-    if not access_token:
-        return [{"error": "Xác thực EUIPO Sandbox (RSQL) thất bại."}]
-    api_url = "https://api-sandbox.euipo.europa.eu/trademark-search/trademarks"
-    headers = {'Accept': 'application/json', 'Authorization': f'Bearer {access_token}', 'X-IBM-Client-Id': os.environ.get("EU_SANDBOX_ID")}
-    query = f"markFeature==WORD and wordMarkSpecification.verbalElement==*{sanitized_name}*"
+    token = _get_euipo_sandbox_access_token()
+    if not token:
+        return [{"error": "Xác thực EUIPO Sandbox thất bại."}]
+    headers = {
+        'Accept': 'application/json',
+        'Authorization': f'Bearer {token}',
+        'X-IBM-Client-Id': os.environ.get("EU_SANDBOX_ID")
+    }
+    api = "https://api-sandbox.euipo.europa.eu/trademark-search/trademarks"
+    # Lấy cả marks có hình: KHÔNG giới hạn markFeature==WORD
+    q = f"wordMarkSpecification.verbalElement==*{sanitized_name}*"
     if nice_class:
-        query += f" and niceClasses=={nice_class}"
-    params = {"query": query, "size": 10}
+        q += f" and niceClasses=={nice_class}"
+    params = {"query": q, "size": 25}
+
     try:
-        r = requests.get(api_url, headers=headers, params=params, timeout=20)
+        r = requests.get(api, headers=headers, params=params, timeout=20)
         r.raise_for_status()
         data = r.json()
-        broad_search_results = data.get("trademarks", [])
+        candidates = data.get("trademarks", [])
     except (JSONDecodeError, RequestException) as e:
-        return [{"error": f"(Sandbox RSQL) Lỗi khi gọi API: {e}"}]
-    if not broad_search_results:
-        return [{"message": f"Không tìm thấy nhãn hiệu nào chứa '{sanitized_name}'."}]
-    # -----------------------------------------------------------------
+        return [{"error": f"API error: {e}"}]
 
-    # --- BƯỚC 2: LỌC KẾT QUẢ BẰNG "SO SÁNH ĐA CHIỀU" ---
-    effective_threshold = threshold if threshold is not None else 0.85
-    print(f"--- [SEARCH LOG] Tìm thấy {len(broad_search_results)} ứng cử viên. Bắt đầu lọc đa chiều với ngưỡng {effective_threshold}... ---")
+    if not candidates:
+        return [{"message": f"Không tìm thấy chứa '{sanitized_name}'."}]
 
-    final_results = []
-    for candidate in broad_search_results:
-        candidate_name = candidate.get("wordMarkSpecification", {}).get("verbalElement", "")
-        if not candidate_name:
-            continue
-        
-        # "Làm sạch" cả tên của ứng cử viên
-        sanitized_candidate_name = _sanitize_for_rsql(candidate_name)
+    thr = threshold if threshold is not None else 0.85
+    filtered: List[Dict[str, Any]] = []
+    for c in candidates:
+        cand_name = (c.get("wordMarkSpecification") or {}).get("verbalElement", "")
+        if not cand_name: continue
+        s1 = compare_text_similarity_tool.invoke({"text1": original_name, "text2": cand_name})
+        s2 = compare_text_similarity_tool.invoke({"text1": sanitized_name, "text2": _sanitize_for_rsql(cand_name)})
+        name_score = max(s1, s2)
+        print(f"--- [SCORE LOG] Name '{original_name}' vs '{cand_name}': {name_score:.3f}")
+        if name_score >= thr:
+            c["similarity_score"] = round(name_score, 3)
+            filtered.append(c)
 
-        # So sánh 1: Nguyên bản vs. Nguyên bản
-        score_original = compare_text_similarity_tool.invoke({"text1": original_name, "text2": candidate_name})
-        
-        # So sánh 2: "Lõi" vs. "Lõi"
-        score_sanitized = compare_text_similarity_tool.invoke({"text1": sanitized_name, "text2": sanitized_candidate_name})
+    if not filtered:
+        return [{"message": f"Không ứng viên đạt ngưỡng >= {thr}"}]
 
-        # Lấy điểm cao nhất làm điểm cuối cùng
-        final_score = max(score_original, score_sanitized)
-        
-        print(f"--- [SCORE LOG] '{original_name}' vs '{candidate_name}': Original Score={score_original:.2f}, Sanitized Score={score_sanitized:.2f} -> Final Score={final_score:.2f}")
+    # Chuẩn hoá user logo sang JPEG b64 (nếu có)
+    user_b64 = None
+    if user_logo_b64:
+        try:
+            # Cho phép input là png/jpg b64 bất kỳ → chuẩn hoá lại một lần
+            raw = base64.b64decode(user_logo_b64)
+            user_b64 = _to_jpeg_b64(raw)
+            del raw
+        except Exception as e:
+            print(f"--- [TOOL WARN] User logo invalid base64: {e}")
+            user_b64 = None
 
-        if final_score >= effective_threshold:
-            candidate["similarity_score"] = round(final_score, 2)
-            final_results.append(candidate)
+    # Lấy ảnh EUIPO (RAM) + CLIP
+    for c in filtered:
+        c["logo_similarity"] = None
+        c["markImageBase64"] = None  # để hiển thị (nếu cần)
+        if user_b64:
+            cand_b64 = _extract_markimage_b64(c, headers)
+            if cand_b64:
+                try:
+                    c["markImageBase64"] = cand_b64  # dùng để render preview nếu UI cần
+                    ls = compare_logo_similarity_tool.invoke({
+                        "user_logo_b64": user_b64,
+                        "candidate_logo_b64": cand_b64
+                    })
+                    c["logo_similarity"] = float(ls)
+                    print(f"--- [CLIP LOG] {c.get('applicationNumber')} logo_sim={c['logo_similarity']}")
+                except Exception as e:
+                    print(f"--- [TOOL WARN] CLIP compare failed: {e}")
 
-    if not final_results:
-        return [{"message": f"Không tìm thấy nhãn hiệu nào đạt ngưỡng tương đồng >= {effective_threshold} với '{original_name}'"}]
+        # combined score
+        if c["logo_similarity"] is not None:
+            c["combined_score"] = round(0.5 * c["similarity_score"] + 0.5 * c["logo_similarity"], 4)
+        else:
+            c["combined_score"] = float(c["similarity_score"])
 
-    final_results.sort(key=lambda x: x["similarity_score"], reverse=True)
-    return final_results
+    filtered.sort(key=lambda x: x.get("combined_score", 0.0), reverse=True)
+    top5 = filtered[:5]
+
+    # Xoá reference lớn khỏi RAM sau khi trả về (Python GC sẽ làm phần còn lại)
+    if user_b64: del user_b64
+    print(f"--- [SEARCH LOG] Done. Top-{len(top5)} ---")
+    return top5
+
     
 @tool
 def design_search_tool(keyword: str, locarno_class: str) -> List[Dict]:

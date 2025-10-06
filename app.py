@@ -1,8 +1,10 @@
+# app.py
 import streamlit as st
 from graph import app
 from langchain_core.messages import HumanMessage, AIMessage
+from PIL import Image
+import io, base64
 
-# --- 1. Thiết lập Giao diện và Trạng thái ---
 st.set_page_config(page_title="Trợ lý AI Tư vấn SHTT", page_icon="⚖️", layout="wide")
 st.title("⚖️ Trợ lý AI Tư vấn Sở hữu trí tuệ")
 
@@ -11,7 +13,15 @@ if "messages" not in st.session_state:
 if "analysis_done" not in st.session_state:
     st.session_state.analysis_done = False
 
-# --- 2. Giai đoạn 1: Hiển thị Form ---
+def _compress_to_b64(file) -> str:
+    img = Image.open(file).convert("RGB")
+    img.thumbnail((512, 512))
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=85)
+    b64 = base64.b64encode(buf.getvalue()).decode("ascii")
+    buf.close()
+    return b64
+
 if not st.session_state.analysis_done:
     st.info("Bước 1: Cung cấp thông tin sản phẩm để nhận phân tích ban đầu.")
     with st.form("product_form"):
@@ -19,15 +29,16 @@ if not st.session_state.analysis_done:
         product_name = st.text_input("Tên sản phẩm/nhãn hiệu dự kiến", "An Lạc")
         description = st.text_area("Mô tả ngắn về sản phẩm", "Sản phẩm chăm sóc sức khỏe từ thảo dược")
         market = st.selectbox("Thị trường mục tiêu", ["EU", "US", "VN", "WIPO"])
-        
         filter_by_nice = st.checkbox("Lọc theo Nhóm Nice", value=True)
-        
-        nice_class = None
-        if filter_by_nice:
-            nice_class = st.number_input("Nhóm Nice dự kiến", min_value=1, max_value=45, value=5, step=1)
-        
-        threshold = 0.8
-        
+        nice_class = st.number_input("Nhóm Nice dự kiến", min_value=1, max_value=45, value=5, step=1) if filter_by_nice else None
+
+        # NEW: Uploader logo (in-RAM)
+        logo_file = st.file_uploader("Logo (tùy chọn) — PNG/JPG", type=["png", "jpg", "jpeg"])
+        user_logo_b64 = None
+        if logo_file is not None:
+            user_logo_b64 = _compress_to_b64(logo_file)
+            st.image(Image.open(io.BytesIO(base64.b64decode(user_logo_b64))), caption="Logo người dùng (preview)", width='content')
+
         submitted = st.form_submit_button("🚀 Bắt đầu Phân tích")
 
         if submitted:
@@ -41,65 +52,27 @@ if not st.session_state.analysis_done:
             - Mô tả: {description}
             - Thị trường: {market}
             - Nhóm Nice: {nice_class if nice_class else 'Không xác định'}
+            - Logo_b64_present: {"yes" if user_logo_b64 else "no"}
+            - Logo_b64: {user_logo_b64 if user_logo_b64 else ""}
             """
-            
             st.session_state.messages.append(HumanMessage(content=initial_prompt))
 
             with st.chat_message("ai"):
-                with st.spinner("Agent đang phân tích, vui lòng chờ..."):
-                    # --- Bỏ phần hiển thị "thinking" ---
+                with st.spinner("Agent đang phân tích..."):
                     message_placeholder = st.empty()
                     full_response = ""
-
                     stream = app.stream({"messages": st.session_state.messages})
-                    
                     for chunk in stream:
-                        node_name = list(chunk.keys())[0]
-                        
-                        # Chỉ xử lý khi agent trả về nội dung cuối cùng
-                        if node_name == "agent" and chunk["agent"]["messages"][-1].content:
+                        node = list(chunk.keys())[0]
+                        if node == "agent" and chunk["agent"]["messages"][-1].content:
                             content = chunk["agent"]["messages"][-1].content
                             full_response += content
                             message_placeholder.markdown(full_response + "▌")
-
                     message_placeholder.markdown(full_response)
-                    
                     if full_response:
                         st.session_state.messages.append(AIMessage(content=full_response))
                         st.session_state.analysis_done = True
-                        st.rerun()
+                        # xoá bản sao b64 khỏi state sau khi phân tích xong (RAM hygiene)
+                        user_logo_b64 = None
                     else:
                         st.error("Agent không thể hoàn thành phân tích. Vui lòng kiểm tra lại.")
-            
-# --- Giai đoạn 2: Giao diện Chat ---
-if st.session_state.analysis_done:
-    st.info("Bước 2: Bạn có thể tiếp tục hỏi các câu hỏi pháp lý liên quan đến báo cáo.")
-    
-    for message in st.session_state.messages:
-        with st.chat_message(message.type):
-            st.markdown(message.content)
-
-    if prompt := st.chat_input("Đặt câu hỏi pháp lý..."):
-        st.session_state.messages.append(HumanMessage(content=prompt))
-        with st.chat_message("human"):
-            st.markdown(prompt)
-
-        with st.chat_message("ai"):
-            with st.spinner("Agent đang suy nghĩ..."):
-                # --- Bỏ phần hiển thị "thinking" ---
-                message_placeholder = st.empty()
-                full_response = ""
-
-                stream = app.stream({"messages": st.session_state.messages})
-
-                for chunk in stream:
-                    node_name = list(chunk.keys())[0]
-                    
-                    if node_name == "agent" and chunk["agent"]["messages"][-1].content:
-                        content = chunk["agent"]["messages"][-1].content
-                        full_response += content
-                        message_placeholder.markdown(full_response + "▌")
-                
-                message_placeholder.markdown(full_response)
-                if full_response:
-                    st.session_state.messages.append(AIMessage(content=full_response))
