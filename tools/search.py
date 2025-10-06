@@ -2,14 +2,13 @@ import os
 import time
 import re
 import requests
-import base64
 from dotenv import load_dotenv
 from typing import List, Dict, Any, Optional
 from requests.exceptions import RequestException, JSONDecodeError
 from langchain_core.tools import tool
 from langchain_core.pydantic_v1 import BaseModel, Field
 
-from .compare import compare_text_similarity_tool, compare_logo_similarity_tool
+from .compare import compare_text_similarity_tool
 load_dotenv()
 
 def _sanitize_for_rsql(name: str) -> str:
@@ -55,38 +54,16 @@ def _get_euipo_sandbox_access_token() -> str | None:
     except RequestException as e:
         print(f"--- [TOOL ERROR] Không thể lấy token (RSQL): {e.response.text if e.response else e} ---")
         return None
-
-def _get_trademark_image_base64(trademark_id: str) -> Optional[str]:
-    """
-    Hàm nội bộ để tải logo của một nhãn hiệu và trả về chuỗi Base64.
-    """
-    print(f"--- [SUB-TOOL LOG] Đang tải logo cho ID: {trademark_id} ---")
-    image_api_url = f"https://api-sandbox.euipo.europa.eu/trademark-search/trademarks/{trademark_id}/image"
-    access_token = _get_euipo_sandbox_access_token()
-    if not access_token: return None
     
-    headers = {'Authorization': f'Bearer {access_token}', 'X-IBM-Client-Id': os.environ.get("EU_SANDBOX_ID")}
-    try:
-        response = requests.get(image_api_url, headers=headers, timeout=30)
-        response.raise_for_status()
-        if 'image' not in response.headers.get('content-type', ''):
-            print(f"--- [SUB-TOOL WARN] API không trả về hình ảnh cho ID {trademark_id}.")
-            return None
-        return base64.b64encode(response.content).decode('utf-8')
-    except RequestException as e:
-        print(f"--- [SUB-TOOL ERROR] Lỗi khi tải ảnh cho ID {trademark_id}: {e}")
-        return None
 
 # --- Công cụ Tra cứu API (API Search Tools) ---
 class TrademarkSearchInput(BaseModel):
     name: str = Field(description="Tên nhãn hiệu cần tra cứu.")
     nice_class: Optional[int] = Field(default=None, description="Nhóm Nice (tùy chọn).")
-    threshold: Optional[float] = Field(default=0.85, description="Ngưỡng tương đồng văn bản.")
-    logo_base64: Optional[str] = Field(default=None, description="Chuỗi Base64 của logo người dùng (tùy chọn).")
+    threshold: Optional[float] = Field(default=None, description="Ngưỡng tương đồng từ 0.0 đến 1.0. Nếu được cung cấp, tool sẽ thực hiện tìm kiếm gần đúng.")
 
-    
 @tool(args_schema=TrademarkSearchInput)
-def trademark_search_tool(name: str, nice_class: Optional[int] = None, threshold: Optional[float] = 0.85, logo_base64: Optional[str] = None) -> List[Dict[str, Any]]:
+def trademark_search_tool(name: str, nice_class: Optional[int] = None, threshold: Optional[float] = 0.85) -> List[Dict[str, Any]]:
     """
     Tra cứu nhãn hiệu, sử dụng phương pháp "so sánh đa chiều" để xử lý các
     trường hợp cố tình viết sai chính tả bằng ký tự đặc biệt.
@@ -99,7 +76,8 @@ def trademark_search_tool(name: str, nice_class: Optional[int] = None, threshold
     if not sanitized_name:
         return [{"error": "Tên nhãn hiệu sau khi làm sạch bị rỗng, không thể tìm kiếm."}]
 
-    # --- BƯỚC 1: TRA CỨU MỞ RỘNG  ---
+    # --- BƯỚC 1: TRA CỨU MỞ RỘNG (giữ nguyên) ---
+    # ... (toàn bộ code gọi API để lấy broad_search_results giữ nguyên) ...
     access_token = _get_euipo_sandbox_access_token()
     if not access_token:
         return [{"error": "Xác thực EUIPO Sandbox (RSQL) thất bại."}]
@@ -118,6 +96,7 @@ def trademark_search_tool(name: str, nice_class: Optional[int] = None, threshold
         return [{"error": f"(Sandbox RSQL) Lỗi khi gọi API: {e}"}]
     if not broad_search_results:
         return [{"message": f"Không tìm thấy nhãn hiệu nào chứa '{sanitized_name}'."}]
+    # -----------------------------------------------------------------
 
     # --- BƯỚC 2: LỌC KẾT QUẢ BẰNG "SO SÁNH ĐA CHIỀU" ---
     effective_threshold = threshold if threshold is not None else 0.85
@@ -150,33 +129,7 @@ def trademark_search_tool(name: str, nice_class: Optional[int] = None, threshold
     if not final_results:
         return [{"message": f"Không tìm thấy nhãn hiệu nào đạt ngưỡng tương đồng >= {effective_threshold} với '{original_name}'"}]
 
-
-    # --- BƯỚC 3 - LẤY, SO SÁNH, VÀ TRẢ VỀ DỮ LIỆU LOGO ---
-    if not logo_base64:
-        final_results.sort(key=lambda x: x["similarity_score"], reverse=True)
-        return final_results
-    
-    print(f"--- [SEARCH LOG] Bắt đầu quá trình tải và so sánh logo... ---")
-    
-    for result in final_results:
-        trademark_id = result.get("applicationNumber")
-        if not trademark_id:
-            result["logo_similarity_score"] = 0.0
-            continue
-
-        candidate_logo_b64 = _get_trademark_image_base64(trademark_id)
-
-        if candidate_logo_b64:
-            logo_score = compare_logo_similarity_tool.invoke({
-                "logo_base64_1": logo_base64,
-                "logo_base64_2": candidate_logo_b64
-            })
-            result["logo_similarity_score"] = logo_score
-            result["retrieved_logo_base64"] = candidate_logo_b64
-        else:
-            result["logo_similarity_score"] = 0.0
-
-    final_results.sort(key=lambda x: (x.get("logo_similarity_score", 0.0), x["similarity_score"]), reverse=True)
+    final_results.sort(key=lambda x: x["similarity_score"], reverse=True)
     return final_results
     
 @tool
