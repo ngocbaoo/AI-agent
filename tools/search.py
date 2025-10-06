@@ -2,13 +2,14 @@ import os
 import time
 import re
 import requests
+from functools import lru_cache
 from dotenv import load_dotenv
 from typing import List, Dict, Any, Optional
 from requests.exceptions import RequestException, JSONDecodeError
 from langchain_core.tools import tool
 from langchain_core.pydantic_v1 import BaseModel, Field
 
-from .compare import compare_text_similarity_tool
+from .compare import compare_logo_similarity_tool, compare_text_similarity_tool
 load_dotenv()
 
 def _sanitize_for_rsql(name: str) -> str:
@@ -61,23 +62,66 @@ class TrademarkSearchInput(BaseModel):
     name: str = Field(description="Tên nhãn hiệu cần tra cứu.")
     nice_class: Optional[int] = Field(default=None, description="Nhóm Nice (tùy chọn).")
     threshold: Optional[float] = Field(default=None, description="Ngưỡng tương đồng từ 0.0 đến 1.0. Nếu được cung cấp, tool sẽ thực hiện tìm kiếm gần đúng.")
+    logo_path: Optional[str] = Field(default=None, description="Đường dẫn hoặc URL đến logo của người dùng để so sánh trực quan.")
+
+
+def _collect_candidate_logo_urls(candidate: Dict[str, Any]) -> List[str]:
+    """Cố gắng trích xuất URL logo từ phản hồi EUIPO (sandbox)."""
+
+    def _walk(value: Any, hint: str = "") -> List[str]:
+        urls: List[str] = []
+        if isinstance(value, dict):
+            for key, nested in value.items():
+                combined_hint = f"{hint}.{key}" if hint else key
+                urls.extend(_walk(nested, combined_hint))
+        elif isinstance(value, list):
+            for item in value:
+                urls.extend(_walk(item, hint))
+        elif isinstance(value, str):
+            lowered_hint = hint.lower()
+            if value.startswith("http"):
+                if any(token in lowered_hint for token in ("image", "logo", "picture", "representation")):
+                    urls.append(value)
+                else:
+                    stripped = value.split("?")[0].lower()
+                    if stripped.endswith((".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp")):
+                        urls.append(value)
+        return urls
+
+    collected = _walk(candidate)
+    seen = set()
+    unique_urls: List[str] = []
+    for url in collected:
+        if url not in seen:
+            seen.add(url)
+            unique_urls.append(url)
+    return unique_urls
+
+
+@lru_cache(maxsize=64)
+def _logo_similarity_cached(user_logo: str, candidate_logo: str) -> float:
+    """Cache kết quả so sánh logo để giảm số lần tải xuống."""
+    return compare_logo_similarity_tool.invoke({"logo_path1": user_logo, "logo_path2": candidate_logo})
+
 
 @tool(args_schema=TrademarkSearchInput)
-def trademark_search_tool(name: str, nice_class: Optional[int] = None, threshold: Optional[float] = 0.85) -> List[Dict[str, Any]]:
+def trademark_search_tool(
+    name: str,
+    nice_class: Optional[int] = None,
+    threshold: Optional[float] = 0.85,
+    logo_path: Optional[str] = None,
+) -> List[Dict[str, Any]]:
     """
-    Tra cứu nhãn hiệu, sử dụng phương pháp "so sánh đa chiều" để xử lý các
-    trường hợp cố tình viết sai chính tả bằng ký tự đặc biệt.
+    Tra cứu nhãn hiệu và cung cấp điểm tương đồng về văn bản lẫn hình ảnh.
     """
     original_name = name
     sanitized_name = _sanitize_for_rsql(name)
 
     print(f"--- [SEARCH LOG] Bắt đầu tra cứu cho '{original_name}' (đã làm sạch thành '{sanitized_name}') ---")
-    
+
     if not sanitized_name:
         return [{"error": "Tên nhãn hiệu sau khi làm sạch bị rỗng, không thể tìm kiếm."}]
 
-    # --- BƯỚC 1: TRA CỨU MỞ RỘNG (giữ nguyên) ---
-    # ... (toàn bộ code gọi API để lấy broad_search_results giữ nguyên) ...
     access_token = _get_euipo_sandbox_access_token()
     if not access_token:
         return [{"error": "Xác thực EUIPO Sandbox (RSQL) thất bại."}]
@@ -96,42 +140,63 @@ def trademark_search_tool(name: str, nice_class: Optional[int] = None, threshold
         return [{"error": f"(Sandbox RSQL) Lỗi khi gọi API: {e}"}]
     if not broad_search_results:
         return [{"message": f"Không tìm thấy nhãn hiệu nào chứa '{sanitized_name}'."}]
-    # -----------------------------------------------------------------
 
-    # --- BƯỚC 2: LỌC KẾT QUẢ BẰNG "SO SÁNH ĐA CHIỀU" ---
     effective_threshold = threshold if threshold is not None else 0.85
     print(f"--- [SEARCH LOG] Tìm thấy {len(broad_search_results)} ứng cử viên. Bắt đầu lọc đa chiều với ngưỡng {effective_threshold}... ---")
 
-    final_results = []
+    final_results: List[Dict[str, Any]] = []
     for candidate in broad_search_results:
         candidate_name = candidate.get("wordMarkSpecification", {}).get("verbalElement", "")
         if not candidate_name:
             continue
-        
-        # "Làm sạch" cả tên của ứng cử viên
+
         sanitized_candidate_name = _sanitize_for_rsql(candidate_name)
 
-        # So sánh 1: Nguyên bản vs. Nguyên bản
         score_original = compare_text_similarity_tool.invoke({"text1": original_name, "text2": candidate_name})
-        
-        # So sánh 2: "Lõi" vs. "Lõi"
         score_sanitized = compare_text_similarity_tool.invoke({"text1": sanitized_name, "text2": sanitized_candidate_name})
+        text_score = max(score_original, score_sanitized)
+        candidate["text_similarity_score"] = round(text_score, 2)
 
-        # Lấy điểm cao nhất làm điểm cuối cùng
-        final_score = max(score_original, score_sanitized)
-        
-        print(f"--- [SCORE LOG] '{original_name}' vs '{candidate_name}': Original Score={score_original:.2f}, Sanitized Score={score_sanitized:.2f} -> Final Score={final_score:.2f}")
+        logo_score = 0.0
+        logo_source = None
+        if logo_path:
+            for url in _collect_candidate_logo_urls(candidate):
+                try:
+                    score = _logo_similarity_cached(logo_path, url)
+                except Exception as exc:
+                    print(f"--- [SCORE ERROR] Không thể so sánh logo với '{url}': {exc}")
+                    continue
+                if score > logo_score:
+                    logo_score = score
+                    logo_source = url
 
-        if final_score >= effective_threshold:
-            candidate["similarity_score"] = round(final_score, 2)
+        if logo_score:
+            candidate["logo_similarity_score"] = round(logo_score, 2)
+            candidate["logo_source"] = logo_source
+
+        overall_score = max(text_score, logo_score)
+
+        print(
+            "--- [SCORE LOG] '%s' vs '%s': Original Score=%.2f, Sanitized Score=%.2f, Logo Score=%.2f -> Overall=%.2f"
+            % (original_name, candidate_name, score_original, score_sanitized, logo_score, overall_score)
+        )
+
+        if overall_score >= effective_threshold:
+            candidate["similarity_score"] = round(overall_score, 2)
             final_results.append(candidate)
 
-    if not final_results:
-        return [{"message": f"Không tìm thấy nhãn hiệu nào đạt ngưỡng tương đồng >= {effective_threshold} với '{original_name}'"}]
+    if final_results:
+        final_results.sort(key=lambda x: x["similarity_score"], reverse=True)
+        return final_results
 
-    final_results.sort(key=lambda x: x["similarity_score"], reverse=True)
-    return final_results
-    
+    if logo_path:
+        logo_ranked = [c for c in broad_search_results if c.get("logo_similarity_score")]
+        if logo_ranked:
+            logo_ranked.sort(key=lambda x: x["logo_similarity_score"], reverse=True)
+            return logo_ranked[:5]
+
+    return [{"message": f"Không tìm thấy nhãn hiệu nào đạt ngưỡng tương đồng >= {effective_threshold} với '{original_name}'"}]
+
 @tool
 def design_search_tool(keyword: str, locarno_class: str) -> List[Dict]:
     """
