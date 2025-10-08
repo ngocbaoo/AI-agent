@@ -26,10 +26,10 @@ if not st.session_state.analysis_done:
     st.info("Bước 1: Cung cấp thông tin sản phẩm để nhận phân tích ban đầu.")
     with st.form("product_form"):
         st.subheader("Hồ sơ Sản phẩm")
-        product_name = st.text_input("Tên sản phẩm/nhãn hiệu dự kiến", "An Lạc")
-        description = st.text_area("Mô tả ngắn về sản phẩm", "Sản phẩm chăm sóc sức khỏe từ thảo dược")
+        product_name = st.text_input("Tên sản phẩm/nhãn hiệu dự kiến", "Panasonic")
+        description = st.text_area("Mô tả ngắn về sản phẩm", "")
         market = st.selectbox("Thị trường mục tiêu", ["EU", "US", "VN", "WIPO"])
-        filter_by_nice = st.checkbox("Lọc theo Nhóm Nice", value=True)
+        filter_by_nice = st.checkbox("Lọc theo Nhóm Nice", value=False)
         nice_class = st.number_input("Nhóm Nice dự kiến", min_value=1, max_value=45, value=5, step=1) if filter_by_nice else None
 
         # NEW: Uploader logo (in-RAM)
@@ -37,7 +37,7 @@ if not st.session_state.analysis_done:
         user_logo_b64 = None
         if logo_file is not None:
             user_logo_b64 = _compress_to_b64(logo_file)
-            st.image(Image.open(io.BytesIO(base64.b64decode(user_logo_b64))), caption="Logo người dùng (preview)", width='content')
+            st.image(Image.open(io.BytesIO(base64.b64decode(user_logo_b64))), caption="Logo người dùng (preview)", width="stretch")
 
         submitted = st.form_submit_button("🚀 Bắt đầu Phân tích")
 

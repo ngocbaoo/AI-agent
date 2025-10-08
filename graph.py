@@ -65,9 +65,7 @@ def agent_node(state: AgentState) -> dict:
             - Điểm tương đồng tên (similarity_score)
             - Điểm tương đồng logo (logo_similarity, nếu có)
             - Ảnh (nếu có markImageBase64, hiển thị; nếu không có thì ghi 'N/A')
-        
      """),
-        
         MessagesPlaceholder(variable_name="messages"),
     ])
 
