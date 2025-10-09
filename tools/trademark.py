@@ -6,7 +6,6 @@ from langchain_core.tools import tool
 from langchain_core.pydantic_v1 import BaseModel, Field
 from PIL import Image, ImageFile, ImageOps
 
-# HEIC (nếu người dùng upload)
 try:
     import pillow_heif
     pillow_heif.register_heif_opener()
@@ -16,11 +15,7 @@ except Exception:
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 load_dotenv()
 
-# ---- import tools (ổn định cả absolute/relative) ----
-try:
-    from tools.compare import compare_text_similarity_tool, compare_logo_similarity_tool
-except Exception:
-    from .compare import compare_text_similarity_tool, compare_logo_similarity_tool
+from .compare import compare_text_similarity_tool, compare_logo_similarity_tool
 
 # Context để app.py set ảnh (tránh nhét base64 vào prompt)
 USER_LOGO_B64_CTX: Optional[str] = None
@@ -546,27 +541,3 @@ def trademark_search_tool(
 
     print(f"--- [SEARCH LOG] Done. Top-{len(out)} ---")
     return out
-
-
-@tool
-def design_search_tool(keyword: str, locarno_class: str) -> List[Dict]:
-    """
-    Tìm kiếm các kiểu dáng công nghiệp dựa trên từ khóa và phân loại Locarno.
-    """
-    print(f"--- [TOOL LOG] Giả lập tra cứu kiểu dáng '{keyword}', nhóm Locarno {locarno_class} ---")
-    return [
-        {"design_name": f"Cool_{keyword}_Design", "designer": "Designer A"},
-        {"design_name": f"Creative_{keyword}_Shape", "designer": "Designer B"},
-    ]
-
-
-@tool
-def patent_search_tool(keyword: str, technical_field: str) -> List[Dict]:
-    """
-    Quét nhanh tiêu đề và tóm tắt của các bằng sáng chế dựa trên từ khóa và lĩnh vực kỹ thuật.
-    """
-    print(f"--- [TOOL LOG] Giả lập tra cứu sáng chế '{keyword}' trong lĩnh vực '{technical_field}' ---")
-    return [
-        {"title": f"Invention related to {keyword}", "abstract": "An abstract about the invention..."},
-        {"title": f"A new method for {keyword}", "abstract": "Details of the new method..."},
-    ]

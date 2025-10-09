@@ -3,7 +3,7 @@ from graph import app
 from langchain_core.messages import HumanMessage, AIMessage
 from PIL import Image, ImageOps
 import io, base64
-from tools import search as search_tools 
+from tools import trademark as search_tools 
 
 st.set_page_config(page_title="Trợ lý AI Tư vấn SHTT", page_icon="⚖️", layout="wide")
 st.title("⚖️ Trợ lý AI Tư vấn Sở hữu trí tuệ")
@@ -22,15 +22,6 @@ def file_to_b64jpeg(uploaded_file):
     out = io.BytesIO()
     img.save(out, format="JPEG", quality=85)
     return "data:image/jpeg;base64," + base64.b64encode(out.getvalue()).decode("ascii")
-
-def _compress_to_b64(file) -> str:
-    img = Image.open(file).convert("RGB")
-    img.thumbnail((512, 512))
-    buf = io.BytesIO()
-    img.save(buf, format="JPEG", quality=85)
-    b64 = base64.b64encode(buf.getvalue()).decode("ascii")
-    buf.close()
-    return b64
 
 def _strip_data_url_prefix(s: str) -> str:
     if s and s.startswith("data:"):
