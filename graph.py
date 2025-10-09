@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from typing import TypedDict, List, Dict, Any, Annotated
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.output_parsers import StrOutputParser
@@ -20,9 +20,17 @@ from tools import tools
 class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], operator.add]
 
-api_key = os.environ.get('GOOGLE_API_KEY')
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash",
-                             google_api_key=api_key).bind_tools(tools)
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
+OLLAMA_MODEL    = os.getenv("OLLAMA_MODEL", "qwen2.5:7b-instruct")
+OLLAMA_API_KEY  = os.getenv("OLLAMA_API_KEY", "ollama")
+
+llm = ChatOpenAI(
+    base_url=OLLAMA_BASE_URL,
+    api_key=OLLAMA_API_KEY,
+    model=OLLAMA_MODEL,
+    temperature=0,
+)
+llm_with_tools = llm.bind_tools(tools)
 
 def agent_node(state: AgentState) -> dict:
     """
@@ -51,6 +59,7 @@ def agent_node(state: AgentState) -> dict:
 
         QUY TẮC
         - BẮT BUỘC phải dùng tool để lấy dữ liệu, không bịa, không trả lời linh tinh.
+        - Trả lời bằng tiếng việt
         - Tra cứu luật bắt buộc phải dùng legal_rag_tool
         - Khi trích dẫn luật: nêu rõ Điều X và số hiệu văn bản.
         - KHÔNG nhắc đến tên công cụ hay con số threshold trong phần trả lời.
@@ -70,7 +79,7 @@ def agent_node(state: AgentState) -> dict:
     ])
 
     # Tạo một chain mới kết hợp prompt và llm (đã được bind tools)
-    agent_chain = prompt | llm
+    agent_chain = prompt | llm_with_tools
 
     # Gọi chain với toàn bộ state['messages']
     response = agent_chain.invoke({"messages": state['messages']})

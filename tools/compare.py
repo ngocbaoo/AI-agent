@@ -1,4 +1,3 @@
-# compare.py
 from langchain_core.tools import tool
 from thefuzz import fuzz
 import numpy as np

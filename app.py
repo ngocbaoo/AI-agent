@@ -1,9 +1,9 @@
-# app.py
 import streamlit as st
 from graph import app
 from langchain_core.messages import HumanMessage, AIMessage
-from PIL import Image
+from PIL import Image, ImageOps
 import io, base64
+from tools import search as search_tools 
 
 st.set_page_config(page_title="Trợ lý AI Tư vấn SHTT", page_icon="⚖️", layout="wide")
 st.title("⚖️ Trợ lý AI Tư vấn Sở hữu trí tuệ")
@@ -13,6 +13,16 @@ if "messages" not in st.session_state:
 if "analysis_done" not in st.session_state:
     st.session_state.analysis_done = False
 
+def file_to_b64jpeg(uploaded_file):
+    uploaded_file.seek(0)
+    raw = uploaded_file.read()
+    img = Image.open(io.BytesIO(raw))
+    img = ImageOps.exif_transpose(img).convert("RGB")
+    img.thumbnail((512, 512))
+    out = io.BytesIO()
+    img.save(out, format="JPEG", quality=85)
+    return "data:image/jpeg;base64," + base64.b64encode(out.getvalue()).decode("ascii")
+
 def _compress_to_b64(file) -> str:
     img = Image.open(file).convert("RGB")
     img.thumbnail((512, 512))
@@ -21,6 +31,11 @@ def _compress_to_b64(file) -> str:
     b64 = base64.b64encode(buf.getvalue()).decode("ascii")
     buf.close()
     return b64
+
+def _strip_data_url_prefix(s: str) -> str:
+    if s and s.startswith("data:"):
+        return s.split(",", 1)[1]
+    return s
 
 if not st.session_state.analysis_done:
     st.info("Bước 1: Cung cấp thông tin sản phẩm để nhận phân tích ban đầu.")
@@ -36,8 +51,13 @@ if not st.session_state.analysis_done:
         logo_file = st.file_uploader("Logo (tùy chọn) — PNG/JPG", type=["png", "jpg", "jpeg"])
         user_logo_b64 = None
         if logo_file is not None:
-            user_logo_b64 = _compress_to_b64(logo_file)
-            st.image(Image.open(io.BytesIO(base64.b64decode(user_logo_b64))), caption="Logo người dùng (preview)", width="stretch")
+            user_logo_b64 = file_to_b64jpeg(logo_file)   
+            search_tools.USER_LOGO_B64_CTX = user_logo_b64
+            payload = _strip_data_url_prefix(user_logo_b64)
+            st.image(
+                Image.open(io.BytesIO(base64.b64decode(payload))),
+                caption="Logo người dùng (preview)",
+                width="stretch",)
 
         submitted = st.form_submit_button("🚀 Bắt đầu Phân tích")
 
@@ -53,7 +73,6 @@ if not st.session_state.analysis_done:
             - Thị trường: {market}
             - Nhóm Nice: {nice_class if nice_class else 'Không xác định'}
             - Logo_b64_present: {"yes" if user_logo_b64 else "no"}
-            - Logo_b64: {user_logo_b64 if user_logo_b64 else ""}
             """
             st.session_state.messages.append(HumanMessage(content=initial_prompt))
 

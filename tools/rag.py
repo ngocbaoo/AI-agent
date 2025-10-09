@@ -8,7 +8,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 
 load_dotenv()
 
@@ -17,9 +17,18 @@ model_name = "bkai-foundation-models/vietnamese-bi-encoder"
 embedding_model = HuggingFaceEmbeddings(model_name=model_name)
 vector_db_path = "./vector_db"
 vectorstore = Chroma(persist_directory=vector_db_path, embedding_function=embedding_model)
-gemini_key = os.environ.get("GOOGLE_API_KEY")
 retriever = vectorstore.as_retriever()
-rag_llm = ChatGoogleGenerativeAI(model='gemini-2.0-flash', google_api_key=gemini_key)
+
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
+OLLAMA_MODEL    = os.getenv("OLLAMA_MODEL", "qwen2.5:7b-instruct")
+OLLAMA_API_KEY  = os.getenv("OLLAMA_API_KEY", "ollama")
+
+rag_llm = ChatOpenAI(
+    base_url=OLLAMA_BASE_URL,
+    api_key=OLLAMA_API_KEY,
+    model=OLLAMA_MODEL,
+    temperature=0,
+)
 
 def format_docs(docs):
     formatted_context = ""
