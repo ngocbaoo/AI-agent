@@ -35,8 +35,6 @@ if not st.session_state.analysis_done:
         product_name = st.text_input("Tên sản phẩm/nhãn hiệu dự kiến", "Panasonic")
         description = st.text_area("Mô tả ngắn về sản phẩm", "")
         market = st.selectbox("Thị trường mục tiêu", ["EU", "US", "VN", "WIPO"])
-        filter_by_nice = st.checkbox("Lọc theo Nhóm Nice", value=False)
-        nice_class = st.number_input("Nhóm Nice dự kiến", min_value=1, max_value=45, value=5, step=1) if filter_by_nice else None
 
         # NEW: Uploader logo (in-RAM)
         logo_file = st.file_uploader("Logo (tùy chọn) — PNG/JPG", type=["png", "jpg", "jpeg"])
@@ -56,13 +54,13 @@ if not st.session_state.analysis_done:
             initial_prompt = f"""
             Hãy phân tích rủi ro sở hữu trí tuệ cho hồ sơ sản phẩm sau đây.
             Bắt đầu bằng việc sử dụng các công cụ tra cứu, sau đó tham khảo luật pháp để đưa ra một báo cáo chiến lược hoàn chỉnh.
-            Hãy nhớ rằng tham khảo điều luật nào phải trích dẫn điều khoản số ... và số hiệu văn bản (ví dụ Điều 8 Nghị định số 65/2023/NĐ-CP)
+            Hãy nhớ rằng tham khảo điều luật nào phải trích dẫn điều khoản số ... và số hiệu văn bản (ví dụ Điều 8 Nghị định số 65/2023/NĐ-CP).
+            Không được nhắc đến tool sử dụng trong câu trả lời.
 
             HỒ SƠ:
             - Tên: {product_name}
             - Mô tả: {description}
             - Thị trường: {market}
-            - Nhóm Nice: {nice_class if nice_class else 'Không xác định'}
             - Logo_b64_present: {"yes" if user_logo_b64 else "no"}
             """
             st.session_state.messages.append(HumanMessage(content=initial_prompt))

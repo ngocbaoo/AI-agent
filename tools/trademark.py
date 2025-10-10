@@ -1,6 +1,6 @@
 import os, time, re, io, base64, requests
 from dotenv import load_dotenv
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Union
 from requests.exceptions import RequestException, JSONDecodeError
 from langchain_core.tools import tool
 from langchain_core.pydantic_v1 import BaseModel, Field
@@ -36,7 +36,7 @@ def decode_any_base64(s: str) -> Tuple[Optional[bytes], Optional[str]]:
         comma = s.find(",")
         if comma == -1:
             return None, None
-        header = s[5:comma]              # ví dụ: image/png;base64
+        header = s[5:comma]             
         payload = s[comma + 1 :]
         semi = header.find(";")
         mime = (header[:semi] if semi != -1 else header).lower()
@@ -346,14 +346,14 @@ def _name_score_pair(a: str, b: str) -> float:
 # ===================== Tools =====================
 class TrademarkSearchInput(BaseModel):
     name: str = Field(description="Tên nhãn hiệu cần tra cứu.")
-    nice_class: Optional[int] = Field(default=None)
+    nice_class: Optional[Union[int, str]] = Field(default=None, description="Một Nhóm Nice hoặc một chuỗi các nhóm cách nhau bởi dấu phẩy (ví dụ: '9, 42').")
     threshold: Optional[float] = Field(default=None)
     user_logo_b64: Optional[str] = Field(default=None, description="(Optional) Base64 JPEG/PNG logo của người dùng.")
 
 @tool(args_schema=TrademarkSearchInput)
 def trademark_search_tool(
     name: str,
-    nice_class: Optional[int] = None,
+    nice_class: Optional[Union[int, str]] = None,
     threshold: Optional[float] = 0.85,
     user_logo_b64: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
@@ -380,7 +380,14 @@ def trademark_search_tool(
     # --- Build query gốc ---
     q_base = f"wordMarkSpecification.verbalElement==*{sanitized_name}*"
     if nice_class:
-        q_base += f" and niceClasses=={nice_class}"
+        # Chuyển đổi input thành list các số nguyên
+        class_list = [int(c.strip()) for c in str(nice_class).split(',') if c.strip().isdigit()]
+        if len(class_list) == 1:
+            q_base += f" and niceClasses=={class_list[0]}"
+        elif len(class_list) > 1:
+            # Sử dụng toán tử 'in' cho nhiều nhóm
+            classes_str = ",".join(map(str, class_list))
+            q_base += f" and niceClasses=in=({classes_str})"
     # cố tăng xác suất có ảnh khi có logo người dùng
     params = {"size": 75}
 

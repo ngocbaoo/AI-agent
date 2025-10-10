@@ -47,19 +47,18 @@ def agent_node(state: AgentState) -> dict:
         - Phân tích hồ sơ, gọi công cụ tra cứu phù hợp, và xuất báo cáo chiến lược + bảng Top-5 dấu hiệu gần giống nhất.
 
         QUY TRÌNH BẮT BUỘC
-        1) Đọc mục HỒ SƠ trong tin nhắn của người dùng:
-            - Nếu có 'Logo_b64_present: yes' thì coi 'Logo_b64:' là base64 logo người dùng.
-        2) Tra cứu nhãn hiệu bằng công cụ:
-            - Gọi `trademark_search_tool` với:
+        1) Đọc mục HỒ SƠ trong tin nhắn của người dùng.
+        2) **Dùng công cụ `suggest_nice_class_tool` với 'Mô tả' từ hồ sơ để xác định tất cả Nhóm Nice có thể phù hợp.**
+        3) Sau khi có Nhóm Nice, gọi công cụ `trademark_search_tool` với các thông tin:
             • name = tên trong hồ sơ
-            • nice_class = nếu có
+            • nice_class = kết quả từ bước 2 (Đây có thể là 1 chuỗi như '9', '42')
             • threshold = 0.8
             • user_logo_b64 = Logo_b64 (nếu present)
-        3) Dựa vào kết quả để đưa ra kết luận rủi ro + khuyến nghị.
+        4) Dựa vào kết quả tra cứu để đưa ra kết luận rủi ro + khuyến nghị.
 
         QUY TẮC
         - BẮT BUỘC phải dùng tool để lấy dữ liệu, không bịa, không trả lời linh tinh.
-        - Trả lời bằng tiếng việt
+        - Trả lời bằng tiếng Việt
         - Tra cứu luật bắt buộc phải dùng legal_rag_tool
         - Khi trích dẫn luật: nêu rõ Điều X và số hiệu văn bản.
         - KHÔNG nhắc đến tên công cụ hay con số threshold trong phần trả lời.
@@ -69,11 +68,7 @@ def agent_node(state: AgentState) -> dict:
         ĐỊNH DẠNG CÂU TRẢ LỜI CUỐI
         1. Tóm tắt rủi ro & căn cứ pháp lý (có trích dẫn).
         2. Khuyến nghị chiến lược.
-        3. Bảng Top-5 gần giống nhất (nếu có), cột:
-            - Tên
-            - Điểm tương đồng tên (similarity_score)
-            - Điểm tương đồng logo (logo_similarity, nếu có)
-            - Ảnh (nếu có markImageBase64, hiển thị; nếu không có thì ghi 'N/A')
+        3. Bảng Top-5 gần giống nhất (nếu có).
      """),
         MessagesPlaceholder(variable_name="messages"),
     ])

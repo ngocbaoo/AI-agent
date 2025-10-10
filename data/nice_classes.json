@@ -1,0 +1,182 @@
+[
+  {
+    "class": 1,
+    "description": "Hóa chất dùng trong công nghiệp, khoa học và nhiếp ảnh, cũng như trong nông nghiệp, làm vườn và lâm nghiệp; nhựa nhân tạo chưa chế biến, chất dẻo chưa chế biến; chế phẩm chữa cháy và phòng cháy; chế phẩm tôi luyện và hàn; chất thuộc da; keo dán dùng trong công nghiệp; compost, phân chuồng, phân bón; chế phẩm sinh học dùng trong công nghiệp và khoa học."
+  },
+  {
+    "class": 2,
+    "description": "Sơn, véc-ni, sơn mài; chất bảo quản chống gỉ và chống hư hại gỗ; chất tạo màu, thuốc nhuộm; mực in, mực đánh dấu và mực khắc; nhựa thiên nhiên thô; kim loại ở dạng lá và bột dùng trong hội họa, trang trí, in ấn và nghệ thuật."
+  },
+  {
+    "class": 3,
+    "description": "Mỹ phẩm và chế phẩm vệ sinh không dùng cho y tế; kem đánh răng không dùng cho y tế; nước hoa; chất tẩy trắng và các chế phẩm khác dùng cho giặt giũ; chế phẩm làm sạch, đánh bóng và mài mòn."
+  },
+  {
+    "class": 4,
+    "description": "Dầu mỡ công nghiệp, sáp; chất bôi trơn; chế phẩm hút bụi, làm ướt và kết dính; nhiên liệu và chất thắp sáng; nến và bấc đèn."
+  },
+  {
+    "class": 5,
+    "description": "Dược phẩm, chế phẩm y tế và thú y; chế phẩm vệ sinh cho mục đích y tế; thực phẩm ăn kiêng và chất dùng cho mục đích y tế hoặc thú y, thực phẩm cho trẻ sơ sinh; thực phẩm bổ sung cho người và động vật; băng dính y tế, vật liệu băng bó; vật liệu trám răng, sáp nha khoa; chất khử trùng; chế phẩm diệt côn trùng; thuốc diệt nấm, thuốc trừ cỏ."
+  },
+  {
+    "class": 6,
+    "description": "Kim loại thông thường và hợp kim, quặng; vật liệu kim loại dùng cho xây dựng; nhà lắp ghép bằng kim loại; cáp và dây kim loại không dẫn điện; phụ kiện phần cứng nhỏ bằng kim loại; thùng chứa bằng kim loại dùng để lưu trữ hoặc vận chuyển; két sắt."
+  },
+  {
+    "class": 7,
+    "description": "Máy móc, máy công cụ, dụng cụ vận hành bằng điện; động cơ và máy, trừ cho phương tiện trên bộ; khớp nối và bộ phận truyền động cho máy (không dùng cho phương tiện trên bộ); dụng cụ nông nghiệp, trừ dụng cụ cầm tay thủ công; máy ấp trứng; máy bán hàng tự động."
+  },
+  {
+    "class": 8,
+    "description": "Dụng cụ và công cụ cầm tay thủ công; dao kéo; vũ khí lạnh (trừ súng); dao cạo."
+  },
+  {
+    "class": 9,
+    "description": "Thiết bị và dụng cụ khoa học, nghiên cứu, định vị, đo đạc, chụp ảnh, điện ảnh, nghe nhìn, quang học, cân, đo, báo hiệu, phát hiện, thử nghiệm, kiểm tra, cứu sinh và giảng dạy; thiết bị và dụng cụ để dẫn, chuyển mạch, biến đổi, tích trữ, điều chỉnh hoặc điều khiển việc phân phối hay sử dụng điện; thiết bị và dụng cụ để ghi, truyền, tái tạo hoặc xử lý âm thanh, hình ảnh hoặc dữ liệu; tệp đa phương tiện đã ghi và có thể tải xuống, phần mềm máy tính, phương tiện ghi và lưu trữ kỹ thuật số hoặc tương tự chưa ghi; cơ cấu cho máy chạy bằng xu; máy tính tiền, thiết bị tính toán; máy tính và thiết bị ngoại vi máy tính; đồ lặn gồm đồ lặn, mặt nạ lặn, nút bịt tai cho thợ lặn, kẹp mũi cho thợ lặn, găng tay cho thợ lặn, thiết bị thở khi bơi lặn; thiết bị chữa cháy."
+  },
+  {
+    "class": 10,
+    "description": "Thiết bị và dụng cụ phẫu thuật, y tế, nha khoa và thú y; chi giả, mắt giả và răng giả; kính mắt, kính áp tròng và kính râm; dụng cụ chỉnh hình; vật liệu khâu; thiết bị và dụng cụ hỗ trợ trị liệu dành cho người khuyết tật; thiết bị massage; thiết bị, dụng cụ và vật dụng cho trẻ sơ sinh; thiết bị, dụng cụ và vật dụng phục vụ hoạt động tình dục."
+  },
+  {
+    "class": 11,
+    "description": "Thiết bị và hệ thống chiếu sáng, sưởi, làm mát, tạo hơi, nấu nướng, sấy, thông gió, cấp nước và vệ sinh."
+  },
+  {
+    "class": 12,
+    "description": "Phương tiện vận tải; thiết bị di chuyển bằng đường bộ, đường không hoặc đường thủy."
+  },
+  {
+    "class": 13,
+    "description": "Vũ khí; đạn dược và đầu đạn; chất nổ; pháo hoa."
+  },
+  {
+    "class": 14,
+    "description": "Kim loại quý và hợp kim của chúng; trang sức, đá quý và bán quý; đồng hồ và dụng cụ đo thời gian."
+  },
+  {
+    "class": 15,
+    "description": "Nhạc cụ; giá đỡ nhạc và giá đỡ cho nhạc cụ; gậy chỉ huy dàn nhạc."
+  },
+  {
+    "class": 16,
+    "description": "Giấy và bìa; ấn phẩm; vật liệu đóng sách; ảnh; đồ văn phòng phẩm và dụng cụ văn phòng, trừ đồ nội thất; keo dán dùng cho văn phòng hoặc gia đình; vật liệu vẽ và cho nghệ sĩ; cọ vẽ; tài liệu hướng dẫn và giảng dạy; màng, tấm và túi nhựa dùng để bọc và đóng gói; chữ in, bản in chữ."
+  },
+  {
+    "class": 17,
+    "description": "Cao su, gutta-percha, nhựa cây, amiăng, mica chưa hoặc bán chế và các chất thay thế; chất dẻo và nhựa ở dạng đùn dùng trong sản xuất; vật liệu đóng gói, chèn lót và cách nhiệt; ống mềm, ống dẫn và vòi không bằng kim loại."
+  },
+  {
+    "class": 18,
+    "description": "Da và giả da; da động vật và da thuộc; hành lý và túi xách; ô dù và dù che nắng; gậy chống; roi, dây cương và yên ngựa; vòng cổ, dây dắt và quần áo cho động vật."
+  },
+  {
+    "class": 19,
+    "description": "Vật liệu xây dựng không bằng kim loại; ống cứng không bằng kim loại dùng cho xây dựng; nhựa đường, hắc ín, bitum; nhà lắp ghép không bằng kim loại; tượng đài không bằng kim loại."
+  },
+  {
+    "class": 20,
+    "description": "Đồ nội thất, gương, khung ảnh; thùng chứa không bằng kim loại dùng để lưu trữ hoặc vận chuyển; xương, sừng, xương cá voi hoặc xà cừ chưa hoặc bán chế; vỏ sò; đá meerschaum; hổ phách."
+  },
+  {
+    "class": 21,
+    "description": "Đồ dùng và thùng chứa dùng trong gia đình hoặc nhà bếp; đồ nấu nướng và bày bàn ăn, trừ nĩa, dao và thìa; lược và bọt biển; bàn chải, trừ cọ vẽ; vật liệu làm bàn chải; vật dụng làm sạch; thủy tinh chưa hoặc bán chế, trừ kính xây dựng; đồ thủy tinh, đồ sứ và gốm sứ."
+  },
+  {
+    "class": 22,
+    "description": "Dây thừng và sợi; lưới; lều và bạt; mái hiên bằng dệt hoặc vật liệu tổng hợp; buồm; bao tải dùng để vận chuyển và lưu trữ hàng rời; vật liệu độn, đệm lót, trừ bằng giấy, bìa, cao su hoặc nhựa; xơ sợi dệt thô và vật liệu thay thế."
+  },
+  {
+    "class": 23,
+    "description": "Sợi và chỉ dùng trong dệt."
+  },
+  {
+    "class": 24,
+    "description": "Vải và vật liệu thay thế vải; đồ vải gia dụng; rèm bằng vải hoặc nhựa."
+  },
+  {
+    "class": 25,
+    "description": "Quần áo, giày dép, mũ nón."
+  },
+  {
+    "class": 26,
+    "description": "Ren và thêu; ruy băng và nơ; cúc, móc và khuy, ghim và kim; hoa giả; phụ kiện tóc; tóc giả."
+  },
+  {
+    "class": 27,
+    "description": "Thảm, chiếu, tấm lót sàn và linoleum cùng các vật liệu khác để phủ sàn hiện có; tranh treo tường không bằng vải."
+  },
+  {
+    "class": 28,
+    "description": "Đồ chơi, trò chơi và đồ chơi điện tử; dụng cụ thể dục và thể thao; đồ trang trí cây thông Noel."
+  },
+  {
+    "class": 29,
+    "description": "Thịt, cá, gia cầm và thú săn; chiết xuất thịt dùng cho mục đích ẩm thực; trái cây, rau và rong biển đã bảo quản, đông lạnh, sấy khô và nấu chín; thạch, mứt, compote; trứng; sữa, pho mát, bơ, sữa chua và các sản phẩm khác từ sữa; dầu và mỡ dùng làm thực phẩm."
+  },
+  {
+    "class": 30,
+    "description": "Cà phê, trà, ca cao và chất thay thế; gạo, mì ống và mì sợi; bột báng và bột sắn; bột và các chế phẩm từ ngũ cốc; bánh mì, bánh ngọt và kẹo; sô cô la; kem, sorbet và các loại đá ăn được khác; đường, mật ong, mật mía; men, bột nở; muối, gia vị, hương liệu, thảo mộc bảo quản; giấm, nước sốt và các loại gia vị khác; đá (nước đá)."
+  },
+  {
+    "class": 31,
+    "description": "Sản phẩm nông nghiệp, nuôi trồng thủy sản, làm vườn và lâm nghiệp thô và chưa chế biến; ngũ cốc và hạt giống thô và chưa chế biến; trái cây và rau tươi, thảo mộc tươi; cây và hoa tự nhiên; củ, cây con và hạt giống gieo trồng; động vật sống; thức ăn và đồ uống cho động vật; mạch nha."
+  },
+  {
+    "class": 32,
+    "description": "Bia; đồ uống không cồn; nước khoáng và nước có ga; đồ uống và nước trái cây; siro và chế phẩm khác để pha đồ uống không cồn."
+  },
+  {
+    "class": 33,
+    "description": "Đồ uống có cồn, trừ bia; chế phẩm có cồn để pha đồ uống."
+  },
+  {
+    "class": 34,
+    "description": "Thuốc lá và sản phẩm thay thế thuốc lá; thuốc lá điếu và xì gà; thuốc lá điện tử và ống hóa hơi cho người hút; đồ dùng cho người hút; diêm."
+  },
+  {
+    "class": 35,
+    "description": "Quảng cáo; quản lý, tổ chức và hành chính kinh doanh; chức năng văn phòng."
+  },
+  {
+    "class": 36,
+    "description": "Dịch vụ tài chính, tiền tệ và ngân hàng; dịch vụ bảo hiểm; dịch vụ bất động sản."
+  },
+  {
+    "class": 37,
+    "description": "Dịch vụ xây dựng; dịch vụ lắp đặt và sửa chữa; khai thác mỏ, khoan dầu khí."
+  },
+  {
+    "class": 38,
+    "description": "Dịch vụ viễn thông."
+  },
+  {
+    "class": 39,
+    "description": "Vận tải; đóng gói và lưu trữ hàng hóa; sắp xếp chuyến đi."
+  },
+  {
+    "class": 40,
+    "description": "Xử lý vật liệu; tái chế chất thải và rác; lọc không khí và xử lý nước; dịch vụ in ấn; bảo quản thực phẩm và đồ uống."
+  },
+  {
+    "class": 41,
+    "description": "Giáo dục; cung cấp đào tạo; giải trí; hoạt động thể thao và văn hóa."
+  },
+  {
+    "class": 42,
+    "description": "Dịch vụ khoa học và công nghệ và nghiên cứu & thiết kế liên quan; phân tích, nghiên cứu công nghiệp và thiết kế công nghiệp; kiểm soát chất lượng và xác thực; thiết kế và phát triển phần cứng và phần mềm máy tính."
+  },
+  {
+    "class": 43,
+    "description": "Dịch vụ cung cấp đồ ăn và đồ uống; chỗ ở tạm thời."
+  },
+  {
+    "class": 44,
+    "description": "Dịch vụ y tế; dịch vụ thú y; chăm sóc vệ sinh và làm đẹp cho người hoặc động vật; dịch vụ nông nghiệp, nuôi trồng thủy sản, làm vườn và lâm nghiệp."
+  },
+  {
+    "class": 45,
+    "description": "Dịch vụ pháp lý; dịch vụ an ninh bảo vệ tài sản hữu hình và con người; dịch vụ hẹn hò, mạng xã hội trực tuyến; dịch vụ tang lễ; trông trẻ."
+  }
+]
