@@ -37,10 +37,11 @@ def _cosine_scaled(a: np.ndarray, b: np.ndarray) -> float:
 @tool
 def compare_text_similarity_tool(text1: str, text2: str) -> float:
     """
-    Đo tương đồng văn bản 0..1 (fuzz.ratio/100).
+    Đo tương đồng văn bản 0..1 bằng fuzz.token_set_ratio/100.
+    Phương pháp này hiệu quả trong việc bỏ qua các từ mô tả và tập trung vào yếu tố chính của nhãn hiệu.
     """
-    print(f"--- [TOOL LOG] Text compare: '{text1}' vs '{text2}' ---")
-    return fuzz.ratio((text1 or "").lower(), (text2 or "").lower()) / 100.0
+    print(f"--- [TOOL LOG] Text compare (token set): '{text1}' vs '{text2}' ---")
+    return fuzz.token_set_ratio((text1 or "").lower(), (text2 or "").lower()) / 100.0
 
 @tool
 def compare_logo_similarity_tool(user_logo_b64: str, candidate_logo_b64: str) -> float:

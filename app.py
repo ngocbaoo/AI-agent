@@ -52,9 +52,8 @@ if not st.session_state.analysis_done:
 
         if submitted:
             initial_prompt = f"""
-            Hãy phân tích rủi ro sở hữu trí tuệ cho hồ sơ sản phẩm sau đây.
-            Bắt đầu bằng việc sử dụng các công cụ tra cứu, sau đó tham khảo luật pháp để đưa ra một báo cáo chiến lược hoàn chỉnh.
-            Hãy nhớ rằng tham khảo điều luật nào phải trích dẫn điều khoản số ... và số hiệu văn bản (ví dụ Điều 8 Nghị định số 65/2023/NĐ-CP).
+            Hãy tra cứu độ tương đồng của hồ sơ sản phẩm sau đây.
+            Bắt đầu bằng việc sử dụng các công cụ tra cứu.
             Không được nhắc đến tool sử dụng trong câu trả lời.
 
             HỒ SƠ:

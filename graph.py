@@ -44,8 +44,8 @@ def agent_node(state: AgentState) -> dict:
         """Bạn là trợ lý AI SHTT.
 
         NHIỆM VỤ:
-        - Phân tích hồ sơ, gọi công cụ tra cứu phù hợp, và xuất báo cáo chiến lược + bảng Top-5 dấu hiệu gần giống nhất.
-
+        - Nhận thông tin sản phẩm, tự động tra cứu và hiển thị toàn bộ kết quả tìm được dưới dạng 1 bảng Markdown
+        
         QUY TRÌNH BẮT BUỘC
         1) Đọc mục HỒ SƠ trong tin nhắn của người dùng.
         2) **Dùng công cụ `suggest_nice_class_tool` với 'Mô tả' từ hồ sơ để xác định tất cả Nhóm Nice có thể phù hợp.**
@@ -54,22 +54,22 @@ def agent_node(state: AgentState) -> dict:
             • nice_class = kết quả từ bước 2 (Đây có thể là 1 chuỗi như '9', '42')
             • threshold = 0.8
             • user_logo_b64 = Logo_b64 (nếu present)
-        4) Dựa vào kết quả tra cứu để đưa ra kết luận rủi ro + khuyến nghị.
+        4) Trình bày toàn bộ kết quả dưới dạng 1 bảng Markdown
 
         QUY TẮC
         - BẮT BUỘC phải dùng tool để lấy dữ liệu, không bịa, không trả lời linh tinh.
         - Trả lời bằng tiếng Việt
-        - Tra cứu luật bắt buộc phải dùng legal_rag_tool
-        - Khi trích dẫn luật: nêu rõ Điều X và số hiệu văn bản.
         - KHÔNG nhắc đến tên công cụ hay con số threshold trong phần trả lời.
-        - ĐƯỢC phép hiển thị điểm tương đồng 0..1 trong bảng Top-5.
-        - BẮT BUỘC phải trả kết quả top 5 về dạng bảng không được trả về dạng json
-
-        ĐỊNH DẠNG CÂU TRẢ LỜI CUỐI
-        1. Tóm tắt rủi ro & căn cứ pháp lý (có trích dẫn).
-        2. Khuyến nghị chiến lược.
-        3. Bảng Top-5 gần giống nhất (nếu có).
-     """),
+        - Hiển thị điểm tương đồng từ 0 đến 1
+        - BẮT BUỘC phải trả kết quả về dạng bảng không được trả về dạng json
+        
+        ĐỊNH DẠNG BẢNG KẾT QUẢ (Markdown):
+        | Tên nhãn hiệu | Mã đơn | Lớp Nice | Trạng thái | Điểm tương đồng tên | Điểm tương đồng Logo |
+        |---|---|---|---|
+        | [Tên nhãn hiệu 1] | [Mã đơn 1] | [Lớp Nice 1] | [Trạng thái 1] | [Điểm 1] | [Điểm 1] |
+        | [Tên nhãn hiệu 2] | [Mã đơn 2] | [Lớp Nice 2] | [Trạng thái 2] | [Điểm 2] | [Điểm 2] |
+        
+        """),
         MessagesPlaceholder(variable_name="messages"),
     ])
 

@@ -337,12 +337,6 @@ def _sanitize_for_rsql(name: str) -> str:
     s = re.sub(r"[^a-zA-Z0-9\s]", "", name)
     return re.sub(r"\s+", " ", s).strip()
 
-def _name_score_pair(a: str, b: str) -> float:
-    s1 = compare_text_similarity_tool.invoke({"text1": a, "text2": b})
-    s2 = compare_text_similarity_tool.invoke({"text1": _sanitize_for_rsql(a), "text2": _sanitize_for_rsql(b)})
-    return max(s1, s2)
-
-
 # ===================== Tools =====================
 class TrademarkSearchInput(BaseModel):
     name: str = Field(description="Tên nhãn hiệu cần tra cứu.")
@@ -358,8 +352,8 @@ def trademark_search_tool(
     user_logo_b64: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """
-    Tra cứu + chấm điểm (tên + logo nếu có). Không lưu file.
-    Trả về Top-5 theo combined_score.
+    Tra cứu + chấm điểm (tên + logo nếu có) và trả về tất cả các nhãn hiệu tương tự tìm được. 
+    Không lưu file.
     """
     original_name = name
     sanitized_name = _sanitize_for_rsql(name)
@@ -389,7 +383,7 @@ def trademark_search_tool(
             classes_str = ",".join(map(str, class_list))
             q_base += f" and niceClasses=in=({classes_str})"
     # cố tăng xác suất có ảnh khi có logo người dùng
-    params = {"size": 75}
+    params = {"size": 100}
 
     def _fetch_list(q: str) -> List[Dict[str, Any]]:
         try:
@@ -461,7 +455,7 @@ def trademark_search_tool(
         cand_name = (c.get("wordMarkSpecification") or {}).get("verbalElement", "")
         if not cand_name:
             continue
-        name_score = _name_score_pair(original_name, cand_name)
+        name_score = compare_text_similarity_tool.invoke({"text1": original_name, "text2": cand_name})
         print(f"[SCORE WORD] '{original_name}' vs '{cand_name}': {name_score:.3f}")
         if name_score >= thr:
             c["similarity_score"] = round(float(name_score), 3)
@@ -477,7 +471,7 @@ def trademark_search_tool(
         cand_name = (c.get("wordMarkSpecification") or {}).get("verbalElement", "")
         if not cand_name:
             continue
-        name_score = _name_score_pair(original_name, cand_name)
+        name_score = compare_text_similarity_tool.invoke({"text1": original_name, "text2": cand_name})
         print(f"[SCORE FIG] '{original_name}' vs '{cand_name}': {name_score:.3f}")
         if name_score < thr:
             continue
@@ -523,19 +517,19 @@ def trademark_search_tool(
         filtered.append(c)
 
     if not filtered:
-        return [{"message": f"Không ứng viên đạt ngưỡng >= {thr}"}]
+        return [{"message": f"Không tìm thấy nhãn hiệu nào có tên tương tự."}]
 
     filtered.sort(key=lambda x: x.get("combined_score", 0.0), reverse=True)
-    top5 = filtered[:5]
 
     # Trả về gọn: không bao gồm ảnh
     out: List[Dict[str, Any]] = []
-    for c in top5:
+    for c in filtered:
         out.append(
             {
                 "applicationNumber": c.get("applicationNumber"),
                 "verbalElement": (c.get("wordMarkSpecification") or {}).get("verbalElement"),
                 "niceClasses": c.get("niceClasses", []),
+                "status": c.get("status"),
                 "name_similarity": float(c.get("similarity_score", 0.0)),
                 "logo_similarity": (None if c.get("logo_similarity") is None else float(c["logo_similarity"])),
                 "combined_score": float(c.get("combined_score", 0.0)),
@@ -546,5 +540,5 @@ def trademark_search_tool(
     if has_user_logo and all(x.get("logo_similarity") is None for x in out):
         out[0]["note"] = "Sandbox/record không cung cấp ảnh; hệ thống chỉ tính điểm tên."
 
-    print(f"--- [SEARCH LOG] Done. Top-{len(out)} ---")
+    print(f"--- [SEARCH LOG] Done. Trả về {len(out)} kết quả. ---")
     return out

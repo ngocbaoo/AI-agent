@@ -4,6 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 import os
+import re
 
 # --- LLM Setup (Tái sử dụng các biến môi trường) ---
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
@@ -18,29 +19,22 @@ classifier_llm = ChatOpenAI(
     temperature=0,
 )
 
-# --- Tool mới ---
 @tool
 def suggest_nice_class_tool(product_description: str) -> str:
     """
-    Dựa vào mô tả sản phẩm, suy luận ra các Nhóm Nice phù hợp nhất.
-    Trả về một chuỗi chứa các số của nhóm, cách nhau bởi dấu phẩy (ví dụ: '9, 39')..
+    Dựa vào mô tả sản phẩm, suy luận ra CÁC Nhóm Nice có thể phù hợp.
+    Trả về một chuỗi chứa các số của nhóm, cách nhau bởi dấu phẩy (ví dụ: '9, 39').
     """
-    print(f"--- [TOOL LOG] Bắt đầu suy luận Nhóm Nice cho mô tả: '{product_description[:50]}...' ---")
+    print(f"--- [TOOL LOG] Bắt đầu suy luận (nhiều) Nhóm Nice cho mô tả: '{product_description[:50]}...' ---")
     
-    # 1. Tải dữ liệu từ file JSON
     try:
-        # Đảm bảo file nice_classes.json nằm cùng cấp với thư mục chạy app.py
-        with open('data/nice_classes.json', 'r', encoding='utf-8') as f:
+        with open(r'data\nice_classes.json', 'r', encoding='utf-8') as f:
             nice_data = json.load(f)
-        
-        # Chuyển dữ liệu thành một chuỗi dễ đọc cho LLM
-        # File JSON của bạn là một list of dicts, cần điều chỉnh cách đọc
         nice_list_str = "\n".join([f"- Nhóm {item['class']}: {item['description']}" for item in nice_data])
     except Exception as e:
         print(f"--- [TOOL ERROR] Không thể đọc file nice_classes.json: {e}")
-        return "Lỗi: Không tìm thấy hoặc không thể đọc file phân loại Nice."
+        return "Lỗi: Không tìm thấy file phân loại Nice."
 
-    # 2. Tạo prompt để yêu cầu LLM phân loại
     classification_prompt = ChatPromptTemplate.from_template(
         """Bạn là chuyên gia phân loại sản phẩm.
         Nhiệm vụ của bạn là đọc mô tả sản phẩm và chọn ra **TẤT CẢ CÁC Nhóm Nice có thể phù hợp** từ danh sách dưới đây.
@@ -57,7 +51,6 @@ def suggest_nice_class_tool(product_description: str) -> str:
         """
     )
     
-    # 3. Tạo và thực thi chain
     chain = classification_prompt | classifier_llm | StrOutputParser()
     
     result = chain.invoke({
@@ -65,12 +58,15 @@ def suggest_nice_class_tool(product_description: str) -> str:
         "nice_list": nice_list_str
     })
     
-    # Lấy số từ kết quả trả về của LLM
-    final_class = "".join(filter(str.isdigit, result))
-    print(f"--- [TOOL LOG] LLM đã suy luận ra Nhóm Nice: {final_class} ---")
+    found_numbers = re.findall(r'\d+', result)
     
-    if not final_class:
-        print("--- [TOOL WARN] LLM không trả về số, trả về None ---")
+    valid_numbers = [num for num in found_numbers if 1 <= int(num) <= 45]
+    cleaned_result = ", ".join(valid_numbers)
+    
+    print(f"--- [TOOL LOG] LLM đã suy luận ra các Nhóm Nice: {cleaned_result} ---")
+    
+    if not cleaned_result:
+        print("--- [TOOL WARN] LLM không trả về số nào hợp lệ, trả về None ---")
         return None
         
-    return final_class
+    return cleaned_result
