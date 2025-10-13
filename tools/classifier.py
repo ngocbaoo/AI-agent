@@ -19,6 +19,7 @@ classifier_llm = ChatOpenAI(
     temperature=0,
 )
 
+# Nice tool
 @tool
 def suggest_nice_class_tool(product_description: str) -> str:
     """
@@ -70,3 +71,52 @@ def suggest_nice_class_tool(product_description: str) -> str:
         return None
         
     return cleaned_result
+
+# Locarno tool
+@tool
+def suggest_locarno_class_tool(product_description: str) -> str:
+    """
+    Dựa vào mô tả sản phẩm, suy luận ra CÁC Nhóm Locarno (cho kiểu dáng công nghiệp) có thể phù hợp.
+    Trả về một chuỗi chứa các mã của nhóm, cách nhau bởi dấu phẩy (ví dụ: '06-01, 06-04').
+    """
+    print(f"--- [TOOL LOG] Bắt đầu suy luận (nhiều) Nhóm Locarno cho mô tả: '{product_description[:50]}...' ---")
+    
+    try:
+        with open('locarno_classes.json', 'r', encoding='utf-8') as f:
+            locarno_data = json.load(f)
+        
+        # Chuyển đổi dữ liệu Locarno thành chuỗi cho LLM
+        locarno_list_str = ""
+        for main_class in locarno_data:
+            locarno_list_str += f"\n**Nhóm chính {main_class['class']}: {main_class['class_title_vi']}**\n"
+            for sub_class in main_class['subclasses']:
+                locarno_list_str += f"- Nhóm phụ {sub_class['code']}: {sub_class['title_vi']}\n"
+
+    except Exception as e:
+        print(f"--- [TOOL ERROR] Không thể đọc file locarno_classes.json: {e}")
+        return "Lỗi: Không tìm thấy file phân loại Locarno."
+
+    classification_prompt = ChatPromptTemplate.from_template(
+        """Bạn là chuyên gia phân loại kiểu dáng sản phẩm.
+        Nhiệm vụ của bạn là đọc mô tả sản phẩm và chọn ra **TẤT CẢ CÁC Nhóm phụ Locarno có thể phù hợp nhất** từ danh sách.
+        Chỉ trả lời bằng **mã của các nhóm phụ (ví dụ: 06-01), cách nhau bởi dấu phẩy**.
+
+        **Mô tả sản phẩm:**
+        {description}
+
+        **Danh sách các Nhóm Locarno:**
+        {locarno_list}
+
+        **Các Nhóm phụ Locarno phù hợp là (chỉ ghi mã, ví dụ 02-03, 09-01):**
+        """
+    )
+    
+    chain = classification_prompt | classifier_llm | StrOutputParser()
+    result = chain.invoke({"description": product_description, "locarno_list": locarno_list_str})
+    
+    # Dùng regex để tìm các mã có định dạng XX-XX
+    found_codes = re.findall(r'\d{2}-\d{2}', result)
+    cleaned_result = ", ".join(found_codes)
+    
+    print(f"--- [TOOL LOG] LLM đã suy luận ra các Nhóm Locarno: {cleaned_result} ---")
+    return cleaned_result if cleaned_result else None

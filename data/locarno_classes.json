@@ -1,0 +1,1158 @@
+[
+  {
+    "class": "01",
+    "class_title_vi": "Thực phẩm",
+    "subclasses": [
+      {
+        "code": "01-01",
+        "title_vi": "Sản phẩm bánh nướng, bánh quy, bánh ngọt, mì và các sản phẩm ngũ cốc khác, sô-cô-la, kẹo, kem lạnh"
+      },
+      {
+        "code": "01-02",
+        "title_vi": "Trái cây, rau củ và sản phẩm từ trái cây, rau củ"
+      },
+      {
+        "code": "01-03",
+        "title_vi": "Phô mai, bơ và chất thay thế bơ, sản phẩm sữa khác"
+      },
+      {
+        "code": "01-04",
+        "title_vi": "Thịt (bao gồm sản phẩm từ thịt heo), cá"
+      },
+      {
+        "code": "01-05",
+        "title_vi": "Đậu hũ và sản phẩm từ đậu hũ"
+      },
+      {
+        "code": "01-06",
+        "title_vi": "Thức ăn cho động vật"
+      },
+      {
+        "code": "01-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "02",
+    "class_title_vi": "Quần áo và phụ liệu may mặc",
+    "subclasses": [
+      {
+        "code": "02-01",
+        "title_vi": "Đồ lót, nội y, áo nịt, áo ngực, đồ ngủ"
+      },
+      {
+        "code": "02-02",
+        "title_vi": "Trang phục"
+      },
+      {
+        "code": "02-03",
+        "title_vi": "Mũ nón"
+      },
+      {
+        "code": "02-04",
+        "title_vi": "Giày dép, vớ/tất và quần tất"
+      },
+      {
+        "code": "02-05",
+        "title_vi": "Cà vạt, khăn choàng, khăn quàng cổ và khăn tay"
+      },
+      {
+        "code": "02-06",
+        "title_vi": "Găng tay"
+      },
+      {
+        "code": "02-07",
+        "title_vi": "Phụ liệu may mặc và phụ kiện trang phục"
+      },
+      {
+        "code": "02-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "03",
+    "class_title_vi": "Đồ du lịch, vali, ô/dù và đồ dùng cá nhân, chưa phân loại nơi khác",
+    "subclasses": [
+      {
+        "code": "03-01",
+        "title_vi": "Rương, vali, cặp táp, túi xách, móc/bao chìa khóa, hộp/bao chuyên dụng, ví và tương tự"
+      },
+      {
+        "code": "03-02",
+        "title_vi": "Trống"
+      },
+      {
+        "code": "03-03",
+        "title_vi": "Ô, dù, mái che nắng và gậy chống"
+      },
+      {
+        "code": "03-04",
+        "title_vi": "Quạt cầm tay"
+      },
+      {
+        "code": "03-05",
+        "title_vi": "Thiết bị để địu và dắt trẻ em"
+      },
+      {
+        "code": "03-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "04",
+    "class_title_vi": "Bàn chải và chổi",
+    "subclasses": [
+      {
+        "code": "04-01",
+        "title_vi": "Bàn chải và chổi lau chùi"
+      },
+      {
+        "code": "04-02",
+        "title_vi": "Bàn chải vệ sinh cơ thể, bàn chải quần áo và bàn chải giày"
+      },
+      {
+        "code": "04-03",
+        "title_vi": "Bàn chải dùng trong máy móc"
+      },
+      {
+        "code": "04-04",
+        "title_vi": "Cọ vẽ, bàn chải dùng trong nấu ăn"
+      },
+      {
+        "code": "04-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "05",
+    "class_title_vi": "Vải vóc và vật liệu dạng tấm nhân tạo/tự nhiên",
+    "subclasses": [
+      {
+        "code": "05-01",
+        "title_vi": "Sợi, chỉ"
+      },
+      {
+        "code": "05-02",
+        "title_vi": "Ren"
+      },
+      {
+        "code": "05-03",
+        "title_vi": "Thêu"
+      },
+      {
+        "code": "05-04",
+        "title_vi": "Ruy băng, dải viền và đồ trang trí viền khác"
+      },
+      {
+        "code": "05-05",
+        "title_vi": "Vải dệt/may"
+      },
+      {
+        "code": "05-06",
+        "title_vi": "Vật liệu dạng tấm nhân tạo hoặc tự nhiên"
+      },
+      {
+        "code": "05-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "06",
+    "class_title_vi": "Đồ nội thất",
+    "subclasses": [
+      {
+        "code": "06-01",
+        "title_vi": "Ghế ngồi"
+      },
+      {
+        "code": "06-02",
+        "title_vi": "Giường"
+      },
+      {
+        "code": "06-03",
+        "title_vi": "Bàn và đồ nội thất tương tự"
+      },
+      {
+        "code": "06-04",
+        "title_vi": "Đồ nội thất lưu trữ (tủ, kệ…)"
+      },
+      {
+        "code": "06-05",
+        "title_vi": "Đồ nội thất tổ hợp"
+      },
+      {
+        "code": "06-06",
+        "title_vi": "Đồ nội thất khác và bộ phận nội thất"
+      },
+      {
+        "code": "06-07",
+        "title_vi": "Gương và khung"
+      },
+      {
+        "code": "06-08",
+        "title_vi": "Móc treo quần áo"
+      },
+      {
+        "code": "06-09",
+        "title_vi": "Nệm và gối/đệm"
+      },
+      {
+        "code": "06-10",
+        "title_vi": "Rèm và mành che trong nhà"
+      },
+      {
+        "code": "06-11",
+        "title_vi": "Thảm"
+      },
+      {
+        "code": "06-12",
+        "title_vi": "Thảm trang trí treo tường (tapiseri)"
+      },
+      {
+        "code": "06-13",
+        "title_vi": "Chăn, vật liệu phủ khác, đồ vải gia dụng và khăn bàn/khăn ăn"
+      },
+      {
+        "code": "06-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "07",
+    "class_title_vi": "Đồ gia dụng, chưa phân loại nơi khác",
+    "subclasses": [
+      {
+        "code": "07-01",
+        "title_vi": "Đồ gốm sứ, thủy tinh, bát đĩa và vật dụng tương tự"
+      },
+      {
+        "code": "07-02",
+        "title_vi": "Thiết bị, dụng cụ và đồ chứa nấu nướng"
+      },
+      {
+        "code": "07-03",
+        "title_vi": "Dao nĩa muỗng dùng bàn ăn"
+      },
+      {
+        "code": "07-04",
+        "title_vi": "Thiết bị/dụng cụ cầm tay để chuẩn bị thực phẩm hoặc đồ uống"
+      },
+      {
+        "code": "07-05",
+        "title_vi": "Bàn ủi và thiết bị giặt, làm sạch, sấy khô"
+      },
+      {
+        "code": "07-06",
+        "title_vi": "Dụng cụ bếp và bàn ăn khác"
+      },
+      {
+        "code": "07-07",
+        "title_vi": "Đồ chứa đựng gia dụng khác"
+      },
+      {
+        "code": "07-08",
+        "title_vi": "Dụng cụ lò sưởi"
+      },
+      {
+        "code": "07-09",
+        "title_vi": "Giá/đế đỡ cho thiết bị và dụng cụ gia dụng"
+      },
+      {
+        "code": "07-10",
+        "title_vi": "Thiết bị làm mát/đông lạnh, thùng cách nhiệt"
+      },
+      {
+        "code": "07-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "08",
+    "class_title_vi": "Dụng cụ và đồ kim khí",
+    "subclasses": [
+      {
+        "code": "08-01",
+        "title_vi": "Dụng cụ khoan, phay hoặc đào"
+      },
+      {
+        "code": "08-02",
+        "title_vi": "Búa và dụng cụ tương tự"
+      },
+      {
+        "code": "08-03",
+        "title_vi": "Dụng cụ cắt"
+      },
+      {
+        "code": "08-04",
+        "title_vi": "Tua vít, cờ-lê/mỏ-lết và phụ kiện"
+      },
+      {
+        "code": "08-05",
+        "title_vi": "Dụng cụ khác"
+      },
+      {
+        "code": "08-06",
+        "title_vi": "Tay cầm, núm vặn và bản lề"
+      },
+      {
+        "code": "08-07",
+        "title_vi": "Thiết bị khóa/đóng"
+      },
+      {
+        "code": "08-08",
+        "title_vi": "Thiết bị cố định, đỡ hoặc lắp đặt (không thuộc lớp khác)"
+      },
+      {
+        "code": "08-09",
+        "title_vi": "Phụ kiện kim loại cho cửa, cửa sổ, đồ nội thất và tương tự (không thuộc lớp khác)"
+      },
+      {
+        "code": "08-10",
+        "title_vi": "Giá/khung cho xe đạp và xe máy"
+      },
+      {
+        "code": "08-11",
+        "title_vi": "Phụ kiện gắn rèm"
+      },
+      {
+        "code": "08-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "09",
+    "class_title_vi": "Bao bì và thùng chứa để vận chuyển/xử lý hàng hóa",
+    "subclasses": [
+      {
+        "code": "09-01",
+        "title_vi": "Chai, bình, hũ, bình lớn và thùng chịu áp"
+      },
+      {
+        "code": "09-02",
+        "title_vi": "Can, thùng phuy và thùng gỗ chứa"
+      },
+      {
+        "code": "09-03",
+        "title_vi": "Hộp, thùng, đồ chứa, lon"
+      },
+      {
+        "code": "09-04",
+        "title_vi": "Giỏ lớn, thùng xếp và giỏ"
+      },
+      {
+        "code": "09-05",
+        "title_vi": "Túi, gói, ống và viên nang đóng gói"
+      },
+      {
+        "code": "09-06",
+        "title_vi": "Dây thừng và vật liệu đai nẹp"
+      },
+      {
+        "code": "09-07",
+        "title_vi": "Phương tiện đóng và phụ kiện (vòi, bộ phân liều, đầu xịt...)"
+      },
+      {
+        "code": "09-08",
+        "title_vi": "Pallet và bệ cho xe nâng"
+      },
+      {
+        "code": "09-09",
+        "title_vi": "Thùng rác và giá đỡ tương ứng"
+      },
+      {
+        "code": "09-10",
+        "title_vi": "Tay cầm/nắm để vận chuyển hoặc xử lý gói hàng/thùng chứa"
+      },
+      {
+        "code": "09-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "10",
+    "class_title_vi": "Đồng hồ và thiết bị đo lường, kiểm tra và báo hiệu",
+    "subclasses": [
+      {
+        "code": "10-01",
+        "title_vi": "Đồng hồ để bàn/treo và đồng hồ báo thức"
+      },
+      {
+        "code": "10-02",
+        "title_vi": "Đồng hồ đeo tay"
+      },
+      {
+        "code": "10-03",
+        "title_vi": "Thiết bị đo thời gian khác"
+      },
+      {
+        "code": "10-04",
+        "title_vi": "Thiết bị đo lường khác"
+      },
+      {
+        "code": "10-05",
+        "title_vi": "Thiết bị kiểm tra, an ninh hoặc thử nghiệm"
+      },
+      {
+        "code": "10-06",
+        "title_vi": "Thiết bị báo hiệu"
+      },
+      {
+        "code": "10-07",
+        "title_vi": "Vỏ, hộp, mặt số, kim và phụ tùng của thiết bị đo/kiểm tra/báo hiệu"
+      },
+      {
+        "code": "10-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "11",
+    "class_title_vi": "Đồ trang sức và trang trí",
+    "subclasses": [
+      {
+        "code": "11-01",
+        "title_vi": "Trang sức"
+      },
+      {
+        "code": "11-02",
+        "title_vi": "Đồ trang trí bàn, lò sưởi, tường; bình/lọ hoa và chậu"
+      },
+      {
+        "code": "11-03",
+        "title_vi": "Huy chương và huy hiệu"
+      },
+      {
+        "code": "11-04",
+        "title_vi": "Hoa, quả và cây giả"
+      },
+      {
+        "code": "11-05",
+        "title_vi": "Cờ và đồ trang trí lễ hội"
+      },
+      {
+        "code": "11-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "12",
+    "class_title_vi": "Phương tiện vận tải hoặc nâng hạ",
+    "subclasses": [
+      {
+        "code": "12-01",
+        "title_vi": "Phương tiện kéo bởi động vật"
+      },
+      {
+        "code": "12-02",
+        "title_vi": "Xe đẩy tay, xe rùa"
+      },
+      {
+        "code": "12-03",
+        "title_vi": "Đầu máy và toa xe đường sắt, phương tiện chạy trên ray khác"
+      },
+      {
+        "code": "12-04",
+        "title_vi": "Cáp treo chở hàng, ghế treo và thang kéo trượt tuyết"
+      },
+      {
+        "code": "12-05",
+        "title_vi": "Thang máy và thiết bị nâng hạ bốc xếp/vận chuyển"
+      },
+      {
+        "code": "12-06",
+        "title_vi": "Tàu thuyền"
+      },
+      {
+        "code": "12-07",
+        "title_vi": "Máy bay và phương tiện vũ trụ"
+      },
+      {
+        "code": "12-08",
+        "title_vi": "Ô tô con, xe buýt và xe tải"
+      },
+      {
+        "code": "12-09",
+        "title_vi": "Máy kéo"
+      },
+      {
+        "code": "12-10",
+        "title_vi": "Rơ-moóc đường bộ"
+      },
+      {
+        "code": "12-11",
+        "title_vi": "Xe đạp và mô tô"
+      },
+      {
+        "code": "12-12",
+        "title_vi": "Xe đẩy trẻ em, xe lăn, cáng"
+      },
+      {
+        "code": "12-13",
+        "title_vi": "Xe chuyên dụng"
+      },
+      {
+        "code": "12-14",
+        "title_vi": "Phương tiện khác"
+      },
+      {
+        "code": "12-15",
+        "title_vi": "Lốp xe và xích chống trượt"
+      },
+      {
+        "code": "12-16",
+        "title_vi": "Bộ phận, thiết bị và phụ kiện cho phương tiện (không thuộc lớp khác)"
+      },
+      {
+        "code": "12-17",
+        "title_vi": "Cấu kiện hạ tầng đường sắt"
+      },
+      {
+        "code": "12-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "13",
+    "class_title_vi": "Thiết bị sản xuất, phân phối hoặc biến đổi điện năng",
+    "subclasses": [
+      {
+        "code": "13-01",
+        "title_vi": "Máy phát và động cơ điện"
+      },
+      {
+        "code": "13-02",
+        "title_vi": "Máy biến áp, chỉnh lưu, pin và ắc quy"
+      },
+      {
+        "code": "13-03",
+        "title_vi": "Thiết bị phân phối hoặc điều khiển điện lực"
+      },
+      {
+        "code": "13-04",
+        "title_vi": "Thiết bị năng lượng mặt trời"
+      },
+      {
+        "code": "13-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "14",
+    "class_title_vi": "Thiết bị ghi âm/ghi hình, viễn thông hoặc xử lý dữ liệu",
+    "subclasses": [
+      {
+        "code": "14-01",
+        "title_vi": "Thiết bị ghi/phát âm thanh hoặc hình ảnh"
+      },
+      {
+        "code": "14-02",
+        "title_vi": "Thiết bị xử lý dữ liệu và thiết bị ngoại vi"
+      },
+      {
+        "code": "14-03",
+        "title_vi": "Thiết bị viễn thông, điều khiển từ xa không dây và khuếch đại vô tuyến"
+      },
+      {
+        "code": "14-04",
+        "title_vi": "Giao diện người dùng đồ họa và biểu tượng"
+      },
+      {
+        "code": "14-05",
+        "title_vi": "Phương tiện ghi và lưu trữ dữ liệu"
+      },
+      {
+        "code": "14-06",
+        "title_vi": "Giá, đỡ và giá đỡ cho thiết bị điện tử (không thuộc lớp khác)"
+      },
+      {
+        "code": "14-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "15",
+    "class_title_vi": "Máy móc, chưa phân loại nơi khác",
+    "subclasses": [
+      {
+        "code": "15-01",
+        "title_vi": "Động cơ (không điện)"
+      },
+      {
+        "code": "15-02",
+        "title_vi": "Máy bơm và máy nén"
+      },
+      {
+        "code": "15-03",
+        "title_vi": "Máy nông lâm nghiệp"
+      },
+      {
+        "code": "15-04",
+        "title_vi": "Máy xây dựng và khai mỏ"
+      },
+      {
+        "code": "15-05",
+        "title_vi": "Máy giặt, làm sạch và sấy"
+      },
+      {
+        "code": "15-06",
+        "title_vi": "Máy dệt, may, đan, thêu (bao gồm bộ phận tích hợp)"
+      },
+      {
+        "code": "15-07",
+        "title_vi": "Máy và thiết bị làm lạnh"
+      },
+      {
+        "code": "15-08",
+        "title_vi": "Trống"
+      },
+      {
+        "code": "15-09",
+        "title_vi": "Máy công cụ, máy mài/đánh nhám và máy đúc"
+      },
+      {
+        "code": "15-10",
+        "title_vi": "Máy chiết rót, đóng gói/bao gói"
+      },
+      {
+        "code": "15-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "16",
+    "class_title_vi": "Thiết bị nhiếp ảnh, điện ảnh và quang học",
+    "subclasses": [
+      {
+        "code": "16-01",
+        "title_vi": "Máy ảnh và máy quay phim"
+      },
+      {
+        "code": "16-02",
+        "title_vi": "Máy chiếu và thiết bị xem"
+      },
+      {
+        "code": "16-03",
+        "title_vi": "Thiết bị sao chụp và phóng to"
+      },
+      {
+        "code": "16-04",
+        "title_vi": "Thiết bị tráng rửa"
+      },
+      {
+        "code": "16-05",
+        "title_vi": "Phụ kiện cho thiết bị nhiếp ảnh/điện ảnh"
+      },
+      {
+        "code": "16-06",
+        "title_vi": "Đồ quang học"
+      },
+      {
+        "code": "16-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "17",
+    "class_title_vi": "Nhạc cụ",
+    "subclasses": [
+      {
+        "code": "17-01",
+        "title_vi": "Nhạc cụ bàn phím"
+      },
+      {
+        "code": "17-02",
+        "title_vi": "Nhạc cụ hơi"
+      },
+      {
+        "code": "17-03",
+        "title_vi": "Nhạc cụ dây"
+      },
+      {
+        "code": "17-04",
+        "title_vi": "Nhạc cụ gõ"
+      },
+      {
+        "code": "17-05",
+        "title_vi": "Nhạc cụ cơ khí"
+      },
+      {
+        "code": "17-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "18",
+    "class_title_vi": "Máy in ấn và máy móc văn phòng",
+    "subclasses": [
+      {
+        "code": "18-01",
+        "title_vi": "Máy đánh chữ và máy tính cơ/điện"
+      },
+      {
+        "code": "18-02",
+        "title_vi": "Máy in"
+      },
+      {
+        "code": "18-03",
+        "title_vi": "Bộ chữ và kiểu chữ in"
+      },
+      {
+        "code": "18-04",
+        "title_vi": "Máy đóng sách, máy dập ghim in, máy xén/cắt giấy (đóng sách)"
+      },
+      {
+        "code": "18-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "19",
+    "class_title_vi": "Văn phòng phẩm và thiết bị văn phòng, vật liệu mỹ thuật và giảng dạy",
+    "subclasses": [
+      {
+        "code": "19-01",
+        "title_vi": "Giấy viết, thiệp thư/báo tin"
+      },
+      {
+        "code": "19-02",
+        "title_vi": "Thiết bị văn phòng"
+      },
+      {
+        "code": "19-03",
+        "title_vi": "Lịch"
+      },
+      {
+        "code": "19-04",
+        "title_vi": "Sách và vật có hình thức tương tự"
+      },
+      {
+        "code": "19-05",
+        "title_vi": "Trống"
+      },
+      {
+        "code": "19-06",
+        "title_vi": "Vật liệu và dụng cụ viết tay, vẽ, sơn, điêu khắc, khắc và kỹ thuật mỹ thuật khác"
+      },
+      {
+        "code": "19-07",
+        "title_vi": "Học liệu và thiết bị giảng dạy"
+      },
+      {
+        "code": "19-08",
+        "title_vi": "Ấn phẩm in khác"
+      },
+      {
+        "code": "19-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "20",
+    "class_title_vi": "Thiết bị bán hàng, quảng cáo và biển hiệu",
+    "subclasses": [
+      {
+        "code": "20-01",
+        "title_vi": "Máy bán hàng tự động"
+      },
+      {
+        "code": "20-02",
+        "title_vi": "Thiết bị trưng bày và bán hàng"
+      },
+      {
+        "code": "20-03",
+        "title_vi": "Biển hiệu, bảng hiệu và thiết bị quảng cáo"
+      },
+      {
+        "code": "20-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "21",
+    "class_title_vi": "Trò chơi, đồ chơi, lều và đồ thể thao",
+    "subclasses": [
+      {
+        "code": "21-01",
+        "title_vi": "Trò chơi và đồ chơi"
+      },
+      {
+        "code": "21-02",
+        "title_vi": "Thiết bị và dụng cụ thể dục thể thao"
+      },
+      {
+        "code": "21-03",
+        "title_vi": "Đồ giải trí khác"
+      },
+      {
+        "code": "21-04",
+        "title_vi": "Lều và phụ kiện"
+      },
+      {
+        "code": "21-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "22",
+    "class_title_vi": "Vũ khí, pháo hoa, đồ săn bắn/câu cá và diệt dịch hại",
+    "subclasses": [
+      {
+        "code": "22-01",
+        "title_vi": "Vũ khí bắn đạn"
+      },
+      {
+        "code": "22-02",
+        "title_vi": "Vũ khí khác"
+      },
+      {
+        "code": "22-03",
+        "title_vi": "Đạn dược, tên lửa và pháo hoa"
+      },
+      {
+        "code": "22-04",
+        "title_vi": "Bia bắn và phụ kiện"
+      },
+      {
+        "code": "22-05",
+        "title_vi": "Thiết bị săn bắn và câu cá"
+      },
+      {
+        "code": "22-06",
+        "title_vi": "Bẫy và vật dụng diệt dịch hại"
+      },
+      {
+        "code": "22-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "23",
+    "class_title_vi": "Thiết bị phân phối chất lỏng; thiết bị vệ sinh, sưởi ấm, thông gió và điều hòa; nhiên liệu rắn",
+    "subclasses": [
+      {
+        "code": "23-01",
+        "title_vi": "Thiết bị phân phối chất lỏng (bao gồm ống và phụ kiện)"
+      },
+      {
+        "code": "23-02",
+        "title_vi": "Trống"
+      },
+      {
+        "code": "23-03",
+        "title_vi": "Thiết bị sưởi"
+      },
+      {
+        "code": "23-04",
+        "title_vi": "Thiết bị thông gió và điều hòa không khí"
+      },
+      {
+        "code": "23-05",
+        "title_vi": "Nhiên liệu rắn"
+      },
+      {
+        "code": "23-06",
+        "title_vi": "Thiết bị vệ sinh dùng cho mục đích vệ sinh cá nhân"
+      },
+      {
+        "code": "23-07",
+        "title_vi": "Thiết bị tiểu tiện và đại tiện"
+      },
+      {
+        "code": "23-08",
+        "title_vi": "Thiết bị vệ sinh và phụ kiện khác (không thuộc lớp khác)"
+      },
+      {
+        "code": "23-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "24",
+    "class_title_vi": "Thiết bị y tế và phòng thí nghiệm",
+    "subclasses": [
+      {
+        "code": "24-01",
+        "title_vi": "Thiết bị và dụng cụ cho y tế và phòng thí nghiệm (cố định)"
+      },
+      {
+        "code": "24-02",
+        "title_vi": "Dụng cụ cầm tay cho y tế và phòng thí nghiệm"
+      },
+      {
+        "code": "24-03",
+        "title_vi": "Vật dụng chỉnh hình/giả"
+      },
+      {
+        "code": "24-04",
+        "title_vi": "Vật liệu băng bó, chăm sóc điều dưỡng và y tế"
+      },
+      {
+        "code": "24-05",
+        "title_vi": "Dụng cụ hỗ trợ đi lại"
+      },
+      {
+        "code": "24-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "25",
+    "class_title_vi": "Vật liệu và cấu kiện xây dựng",
+    "subclasses": [
+      {
+        "code": "25-01",
+        "title_vi": "Vật liệu xây dựng"
+      },
+      {
+        "code": "25-02",
+        "title_vi": "Bộ phận xây dựng tiền chế/tiền lắp"
+      },
+      {
+        "code": "25-03",
+        "title_vi": "Nhà, gara và công trình khác"
+      },
+      {
+        "code": "25-04",
+        "title_vi": "Bậc thang, thang và giàn giáo"
+      },
+      {
+        "code": "25-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "26",
+    "class_title_vi": "Thiết bị chiếu sáng",
+    "subclasses": [
+      {
+        "code": "26-01",
+        "title_vi": "Đế nến và chân nến nhiều nhánh"
+      },
+      {
+        "code": "26-02",
+        "title_vi": "Đèn pin, đèn cầm tay và đèn lồng"
+      },
+      {
+        "code": "26-03",
+        "title_vi": "Đèn chiếu sáng công cộng, ngoài trời, sân khấu"
+      },
+      {
+        "code": "26-04",
+        "title_vi": "Nguồn phát sáng, có điện hoặc không"
+      },
+      {
+        "code": "26-05",
+        "title_vi": "Đèn, đèn sàn, đèn chùm, đèn tường/trần, đèn máy chiếu ảnh/điện ảnh"
+      },
+      {
+        "code": "26-06",
+        "title_vi": "Thiết bị chiếu sáng cho phương tiện"
+      },
+      {
+        "code": "26-07",
+        "title_vi": "Bộ phận và phụ kiện cho thiết bị chiếu sáng (không thuộc lớp khác)"
+      },
+      {
+        "code": "26-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "27",
+    "class_title_vi": "Thuốc lá và đồ dùng cho người hút thuốc",
+    "subclasses": [
+      {
+        "code": "27-01",
+        "title_vi": "Thuốc lá, xì gà và thuốc lá điếu"
+      },
+      {
+        "code": "27-02",
+        "title_vi": "Tẩu, ống ngậm xì gà/thuốc lá"
+      },
+      {
+        "code": "27-03",
+        "title_vi": "Gạt tàn"
+      },
+      {
+        "code": "27-04",
+        "title_vi": "Diêm"
+      },
+      {
+        "code": "27-05",
+        "title_vi": "Bật lửa"
+      },
+      {
+        "code": "27-06",
+        "title_vi": "Hộp xì gà, hộp thuốc lá, hũ thuốc và túi đựng"
+      },
+      {
+        "code": "27-07",
+        "title_vi": "Thuốc lá điện tử và đồ hút điện tử khác"
+      },
+      {
+        "code": "27-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "28",
+    "class_title_vi": "Sản phẩm dược phẩm và mỹ phẩm, vật dụng và thiết bị vệ sinh cá nhân",
+    "subclasses": [
+      {
+        "code": "28-01",
+        "title_vi": "Sản phẩm dược phẩm"
+      },
+      {
+        "code": "28-02",
+        "title_vi": "Sản phẩm mỹ phẩm"
+      },
+      {
+        "code": "28-03",
+        "title_vi": "Vật dụng vệ sinh cá nhân và thiết bị chăm sóc sắc đẹp"
+      },
+      {
+        "code": "28-04",
+        "title_vi": "Tóc giả và vật phẩm làm đẹp giả"
+      },
+      {
+        "code": "28-05",
+        "title_vi": "Sản phẩm khử mùi/làm thơm không khí"
+      },
+      {
+        "code": "28-06",
+        "title_vi": "Thiết bị và dụng cụ tạo kiểu tóc"
+      },
+      {
+        "code": "28-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "29",
+    "class_title_vi": "Thiết bị phòng cháy, phòng ngừa tai nạn và cứu sinh",
+    "subclasses": [
+      {
+        "code": "29-01",
+        "title_vi": "Thiết bị phòng cháy chữa cháy"
+      },
+      {
+        "code": "29-02",
+        "title_vi": "Thiết bị phòng ngừa tai nạn và cứu sinh (không phân loại nơi khác)"
+      },
+      {
+        "code": "29-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "30",
+    "class_title_vi": "Đồ chăm sóc và quản lý vật nuôi",
+    "subclasses": [
+      {
+        "code": "30-01",
+        "title_vi": "Quần áo cho động vật"
+      },
+      {
+        "code": "30-02",
+        "title_vi": "Chuồng, lồng, cũi và nơi trú tương tự"
+      },
+      {
+        "code": "30-03",
+        "title_vi": "Dụng cụ cho ăn và uống"
+      },
+      {
+        "code": "30-04",
+        "title_vi": "Yên cương"
+      },
+      {
+        "code": "30-05",
+        "title_vi": "Roi và gậy kích"
+      },
+      {
+        "code": "30-06",
+        "title_vi": "Giường, tổ và đồ nội thất cho vật nuôi"
+      },
+      {
+        "code": "30-07",
+        "title_vi": "Cành đậu và phụ kiện gắn lồng"
+      },
+      {
+        "code": "30-08",
+        "title_vi": "Dụng cụ đánh dấu và ghông/xích"
+      },
+      {
+        "code": "30-09",
+        "title_vi": "Cọc buộc"
+      },
+      {
+        "code": "30-10",
+        "title_vi": "Dụng cụ chải chuốt cho vật nuôi"
+      },
+      {
+        "code": "30-11",
+        "title_vi": "Khay vệ sinh và dụng cụ dọn chất thải"
+      },
+      {
+        "code": "30-12",
+        "title_vi": "Đồ chơi và thiết bị huấn luyện cho vật nuôi"
+      },
+      {
+        "code": "30-99",
+        "title_vi": "Khác"
+      }
+    ]
+  },
+  {
+    "class": "31",
+    "class_title_vi": "Máy móc và thiết bị chế biến thực phẩm/đồ uống, chưa phân loại nơi khác",
+    "subclasses": [
+      {
+        "code": "31-00",
+        "title_vi": "Máy móc và thiết bị chế biến thực phẩm/đồ uống (khác)"
+      }
+    ]
+  },
+  {
+    "class": "32",
+    "class_title_vi": "Biểu tượng đồ họa và logo, họa tiết bề mặt, trang trí; bố trí nội ngoại thất",
+    "subclasses": [
+      {
+        "code": "32-01",
+        "title_vi": "Biểu tượng và logo, họa tiết bề mặt, trang trí"
+      },
+      {
+        "code": "32-02",
+        "title_vi": "Bố trí nội thất và ngoại thất"
+      }
+    ]
+  }
+]

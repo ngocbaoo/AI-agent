@@ -20,7 +20,6 @@ from .compare import compare_text_similarity_tool, compare_logo_similarity_tool
 # Context để app.py set ảnh (tránh nhét base64 vào prompt)
 USER_LOGO_B64_CTX: Optional[str] = None
 
-
 # ===================== Base64 helpers =====================
 def decode_any_base64(s: str) -> Tuple[Optional[bytes], Optional[str]]:
     """
@@ -58,7 +57,6 @@ def decode_any_base64(s: str) -> Tuple[Optional[bytes], Optional[str]]:
         raw = base64.b64decode(payload2, validate=False)
     return raw, mime
 
-
 # ===================== EUIPO Auth =====================
 _euipo_sandbox_access_token: Optional[str] = None
 _euipo_sandbox_token_expires_at: float = 0.0
@@ -90,7 +88,6 @@ def _get_euipo_sandbox_access_token() -> Optional[str]:
     except RequestException as e:
         print(f"--- [TOOL ERROR] Token error: {e}")
         return None
-
 
 # ===================== Image normalize =====================
 def _looks_like_svg(raw: bytes) -> bool:
@@ -205,7 +202,6 @@ def _fetch_image_from_endpoints(app_no: str, headers: Dict[str, str], prefer_thu
         except Exception as e:
             print(f"[WARN] image endpoint failed: {e} | {url}")
     return None
-
 
 # ===================== markImage parsing =====================
 def _extract_b64_from_obj(obj: Any, app_no: str) -> Optional[str]:
@@ -328,7 +324,6 @@ def extract_logo_b64_from_detail(app_no: str, headers: Dict[str, str]) -> Option
 
     print(f"[DEBUG] no inline/endpoint image for {app_no}")
     return None
-
 
 # ===================== Misc =====================
 def _sanitize_for_rsql(name: str) -> str:
@@ -521,7 +516,6 @@ def trademark_search_tool(
 
     filtered.sort(key=lambda x: x.get("combined_score", 0.0), reverse=True)
 
-    # Trả về gọn: không bao gồm ảnh
     out: List[Dict[str, Any]] = []
     for c in filtered:
         out.append(
